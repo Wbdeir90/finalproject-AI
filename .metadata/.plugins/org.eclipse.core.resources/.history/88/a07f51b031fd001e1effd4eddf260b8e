@@ -1,0 +1,54 @@
+
+
+public class Packet {
+	
+	public static void main(String[] args) {
+	
+
+		HT ports = new HT(701);
+		
+		packetRepository port1 = new packetRepository(10, "TCP1", 28);
+		
+		packetRepository port2 = new packetRepository(11, "UDP", 20 );
+		
+		packetRepository port3 = new packetRepository(11, "TCP3", 50);
+		
+		packetRepository port4 = new packetRepository(12, "TCP4", 30);
+		
+		ports.insertNewRecord(port1);
+		ports.insertNewRecord(port2);
+		ports.insertNewRecord(port4);
+		
+		packetRepository result = ports.searchRecord(11);
+		if (result != null) {
+			System.out.println("Person record found. The name is: " + result.getName() + " the index is: " + result.getKey()); 
+		} else {
+			System.out.println("The search did not find the object at hand");
+		}
+		System.out.println("deleting index 11 / port 2:");
+		ports.deleteRecord(port2);
+		
+		packetRepository updatedresult = ports.searchRecord(11);
+		if (updatedresult != null) {
+			System.out.println("Person record found. The name is: " + updatedresult.getName()); 
+		} else {
+			System.out.println("The search did not find the object at hand" ); 
+			//this should say its not found
+		}
+
+		
+		ports.insertNewRecord(port3); //this should add TCP3
+		
+		packetRepository lastresult = ports.searchRecord(11);
+		
+		if (lastresult != null) {
+			System.out.println("Person record found. The name is: " + lastresult.getName() + " the index is: " + lastresult.getKey()); //this is printing out TCP
+		} else {
+			System.out.println("The search did not find the object at hand");
+
+		}
+	}
+
+}
+
+

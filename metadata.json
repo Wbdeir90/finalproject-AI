@@ -1,0 +1,21 @@
+{
+    "name": "bq_to_vertexai_template",
+    "description": "Dataflow pipeline to move data from BigQuery to Vertex AI",
+    "parameters": [
+      {
+        "name": "input_table",
+        "label": "Input BigQuery Table",
+        "helpText": "BigQuery table in format 'project.dataset.table'",
+        "type": "STRING",
+        "defaultValue": "finalproject-1234567.final.spam_cleaned"
+      },
+      {
+        "name": "output_table",
+        "label": "Output BigQuery Table",
+        "helpText": "BigQuery table where results will be stored",
+        "type": "STRING",
+        "defaultValue": "finalproject-1234567.final.spam_features"
+      }
+    ]
+  }
+  

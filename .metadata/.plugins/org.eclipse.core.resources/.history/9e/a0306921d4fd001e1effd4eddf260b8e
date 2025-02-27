@@ -1,0 +1,26 @@
+public class HT {
+    private Packet[] table;
+
+    public HT(int size) {
+        this.table = new Packet[size];
+    }
+
+    private int hashFunction(long sequenceNumber) {
+        return (int) (sequenceNumber % table.length);
+    }
+
+    public void insert(Packet packet) {
+        int index = hashFunction(packet.getSequenceNumber());
+        table[index] = packet;
+    }
+
+    public Packet search(long sequenceNumber) {
+        int index = hashFunction(sequenceNumber);
+        return table[index];
+    }
+
+    public void delete(long sequenceNumber) {
+        int index = hashFunction(sequenceNumber);
+        table[index] = null;
+    }
+}

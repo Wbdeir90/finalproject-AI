@@ -1,0 +1,107 @@
+package library;
+
+public class IntNodeBacon
+{
+    private int sequenceNumber;
+    private int data;
+    private IntNodeBacon link;
+
+
+    // Precondition:
+    // Post condition: All instance variables of the IntNode class are initialized in order.
+    public IntNodeBacon(int initialSequenceNumber, int initialData, IntNodeBacon initialLink)
+    {
+        sequenceNumber = initialSequenceNumber;
+        data = initialData; // Initialize the data
+        link = initialLink; // Initialize the link to the next node
+    }
+
+
+    // Precondition: This instance of the IntNode class exists.
+    // In other words, the object whose method is activated exists as a node in the linked list.
+    // Post condition: A new node with attributes item and data is created. Item serves as sequenceNumber.
+    // The new node is added to the linked list at a position that comes immediately after the node whose method is activated.
+    public void addNodeAfter(int data, int item)
+    {
+        link = new IntNodeBacon(item, data, link);
+
+    }
+
+
+    // Precondition: This instance of the IntNode class exists.
+    // In other words, the object whose method is activated exists as a node in the linked list.
+    // Post condition: The specific node, which comes immediately after the node whose method is activated,
+    // is removed from the linked list.
+    public void removeNodeAfter( )
+    {
+        link = link.link;
+
+    }
+
+
+    // Precondition: This instance of the IntNode class exists.
+    // Post condition: The sequenceNumber of this node is returned, after setting detectionFlag to false.
+    public int getSequenceNumber(boolean detectionFlg)
+    {
+        detectionFlg = false;
+        return sequenceNumber;
+    }
+
+
+    // Precondition: This instance of the IntNode class exists.
+    // Post condition: The link of this node is returned.
+    public IntNodeBacon getLink( )
+    {
+
+        return link;
+    }
+
+
+    // Precondition: The linked list contains at least one element.
+    // Post condition: The (sequence number, data) pairs of each node in the linked list, starting with the head,
+    // are displayed on the monitor.
+    public void displayNodeData(IntNodeBacon head)
+    {
+
+        while(head != null){
+            System.out.print("(" + head.sequenceNumber + ", " + head.data + ")");
+            System.out.println(" \n");
+            head = head.link;
+        }
+    }
+
+
+    // Precondition: The head of the linked list is different than null, and its sequenceNumber is different than target.
+    // Post condition: The link to the specific node, which comes before the node whose sequenceNumber is equal to target,
+    // is returned. If the linked list does not contain a node with sequenceNumber equal to target, then null is returned.
+    public IntNodeBacon findPrevious(IntNodeBacon head, int target)
+    {
+        IntNodeBacon previous = null;
+        while(head.link != null){ // Loop through each node in the linked list
+            if(head.link.sequenceNumber == target){ // Check if the next node has the target sequence number
+                return head;
+            }
+            head = head.link;
+        }
+        return previous;
+    }
+
+
+    // Precondition: The head of the linked list is different than null, and its sequenceNumber is smaller than target.
+    // Post condition: The link to the specific node, which comes before the node (previous) that is the first in the linked list
+    // to have a sequenceNumber greater than target, is returned.
+    // If no such node is found, the link to the last node in the linked list is returned.
+    public IntNodeBacon locatePredecessor(IntNodeBacon head, int target)
+    {
+        IntNodeBacon previous = null;
+        while(head != null && head.sequenceNumber < target ){ // Loop through each node in the linked list until reaching a node with a greater sequence number than the target
+            previous = head; // Update the previous node
+            head = head.link;
+        }
+        return previous;
+
+    }
+
+}
+
+

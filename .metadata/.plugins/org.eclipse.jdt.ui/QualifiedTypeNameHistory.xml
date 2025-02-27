@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="javax.swing.SwingUtilities"/>
+    <fullyQualifiedTypeName name="javax.swing.AbstractButton"/>
+    <fullyQualifiedTypeName name="javax.swing.SwingConstants"/>
+    <fullyQualifiedTypeName name="javax.swing.JTextArea"/>
+    <fullyQualifiedTypeName name="javax.swing.JScrollPane"/>
+    <fullyQualifiedTypeName name="javax.swing.WindowConstants"/>
+    <fullyQualifiedTypeName name="junit.framework.TestSuite"/>
+    <fullyQualifiedTypeName name="junit.framework.Assert"/>
+    <fullyQualifiedTypeName name="org.junit.Assert"/>
+    <fullyQualifiedTypeName name="org.junit.After"/>
+    <fullyQualifiedTypeName name="textbook.StackWork"/>
+    <fullyQualifiedTypeName name="java.util.Objects"/>
+    <fullyQualifiedTypeName name="javax.swing.JDialog"/>
+    <fullyQualifiedTypeName name="javax.swing.JComboBox"/>
+    <fullyQualifiedTypeName name="javax.swing.JPanel"/>
+    <fullyQualifiedTypeName name="javax.swing.JLabel"/>
+    <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+    <fullyQualifiedTypeName name="javax.swing.JButton"/>
+    <fullyQualifiedTypeName name="Main.TaskSelectionDialog"/>
+    <fullyQualifiedTypeName name="Test.ChildTaskTrackingApp"/>
+    <fullyQualifiedTypeName name="Main.ChildSelectionDialog"/>
+    <fullyQualifiedTypeName name="javax.swing.JFrame"/>
+    <fullyQualifiedTypeName name="java.awt.GridLayout"/>
+    <fullyQualifiedTypeName name="Main.TaskAssignmentDialog"/>
+    <fullyQualifiedTypeName name="java.util.regex.Pattern"/>
+    <fullyQualifiedTypeName name="org.hamcrest.Matcher"/>
+    <fullyQualifiedTypeName name="Main.Task"/>
+    <fullyQualifiedTypeName name="Main.ChildTaskTrackingApp"/>
+    <fullyQualifiedTypeName name="Main.Parent"/>
+    <fullyQualifiedTypeName name="java.awt.Component"/>
+    <fullyQualifiedTypeName name="java.awt.Container"/>
+    <fullyQualifiedTypeName name="Main.PrizeSelectionDialog"/>
+    <fullyQualifiedTypeName name="javax.swing.JTextField"/>
+    <fullyQualifiedTypeName name="javax.swing.JPasswordField"/>
+</qualifiedTypeNameHistroy>

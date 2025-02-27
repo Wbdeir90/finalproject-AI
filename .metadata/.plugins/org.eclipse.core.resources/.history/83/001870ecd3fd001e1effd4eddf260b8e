@@ -1,0 +1,57 @@
+public class packetRepository {
+
+    public static void main(String[] args) {
+        
+        System.out.println("\n----Hello User, this program is using a HashTable Data Structure to store Network Packets and its data!\n");
+        System.out.println("----------------------------------------------------------------------------------------\n");
+        
+        HT Num_Network_Packets = new HT(500);
+
+        Packet seq_Number1 = new Packet(429496729, "UDP" , 7);
+        Packet seq_Number2 = new Packet(123456789, "TCP", 9);
+        Packet seq_Number3 = new Packet(8, "UDP", 2);
+        Packet seq_Number4 = new Packet(9000, "TCP", 6);
+
+        Num_Network_Packets.insert_new_Packet(seq_Number4);
+        Num_Network_Packets.insert_new_Packet(seq_Number1);
+        Num_Network_Packets.insert_new_Packet(seq_Number2);
+        Num_Network_Packets.insert_new_Packet(seq_Number3);
+
+        Packet result1 = Num_Network_Packets.searchPacket(0);
+        Packet result2 = Num_Network_Packets.searchPacket(8);
+
+        if(result1 != null){
+            System.out.println("Search Complete! Packet found: " + result1.get_Packet());
+        }
+        else{
+            System.out.println("----Search Complete: Packet with sequence Number 0 was never inserted!\n");
+        }
+        
+        if(result2 != null){
+            System.out.println("Search Complete! Packet found: " + result2.get_Packet());
+        }
+        else{
+            System.out.println("----Search Complete: Packet with sequence number 8 was never not found!\n");
+        }
+
+        Num_Network_Packets.delete_Packet(result2);
+
+        result2 = Num_Network_Packets.searchPacket(8);
+        
+        if(result2 != null){
+            System.out.println("Search Complete! Packet found: " + result2.get_Packet());
+        }
+        else{
+            System.out.println("----Search Complete: Packet with sequence number 8 was not found!\n");
+        }
+        
+        
+
+        System.out.println("\n----------------------------------------------------------------------------------------");
+
+        
+
+    }
+    
+}
+

@@ -1,0 +1,26 @@
+
+public class Packet {
+
+	private long key;
+	private String protocol;
+	private int port;
+	
+	public Packet(long key, String protocol, int port) {
+		this.key = key;
+		this.protocol = protocol;
+		this.port = port;
+	}
+	
+	public long getKey() {
+		return this.key;
+	}
+	
+	public String getProtocol() {
+		return protocol;
+	}
+	
+	public int getPort() {
+		return this.port;
+	}
+	
+}

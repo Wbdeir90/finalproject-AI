@@ -1,0 +1,32 @@
+
+
+public class Packet {
+
+  private long sequence;
+  private int port;
+  private String protocol;
+  private boolean isValid;
+
+  public Packet(long sequenceNumber, int portNumber, String protocolName) {
+    sequence = sequenceNumber;
+    port = portNumber;
+    protocol = protocolName;
+    isValid = true;
+  }
+
+  public long getSequence() {
+    return sequence;
+  }
+
+  public int getPort() {
+    return port;
+  }
+
+  public String getProtocol() {
+    return protocol;
+  }
+
+  public boolean GetValidity() {
+    return isValid;
+  }
+}

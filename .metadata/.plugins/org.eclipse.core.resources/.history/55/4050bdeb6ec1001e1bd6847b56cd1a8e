@@ -1,0 +1,44 @@
+package library;
+
+public class IntNode {
+    private int sequenceNumber;
+    private int data;
+    private IntNode link;
+
+    public IntNode(int initialsequenceNumber, int initialdata, IntNode initialLink) {
+        // Implement me.
+    }
+
+    public void addNodeAfter(int data, int item) {
+        // Implement me.
+    }
+
+    public void removeNodeAfter() {
+        // Implement me.
+    }
+
+    public int getSequenceNumber(boolean detectionFlag) {
+        detectionFlag = false;
+        // Implement me.
+        return 0; // Replace with the actual sequence number retrieval logic.
+    }
+
+    public IntNode getLink() {
+        // Implement me.
+        return null; // Replace with the actual link retrieval logic.
+    }
+
+    public static void displayNodeData(IntNode head) {
+        // Implement me.
+    }
+
+    public IntNode findPrevious(IntNode head, int target) {
+        // Implement me.
+        return null; // Replace with the actual logic.
+    }
+
+    public IntNode locatePredecessor(IntNode head, int target) {
+        // Implement me.
+        return null; // Replace with the actual logic.
+    }
+}

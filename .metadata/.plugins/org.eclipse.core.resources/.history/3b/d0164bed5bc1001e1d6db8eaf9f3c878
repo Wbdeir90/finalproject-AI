@@ -1,0 +1,119 @@
+public class IntrusionDetectorClass {
+
+    static IntNode head = null;
+
+    public static void main(String[] args) {
+
+        System.out.println("The NIDS correctly creates and maintains a linked list of network packets in ascending order and without duplicates.\n");
+
+        head = new IntNode(13, 230185386, head);
+        System.out.println("The (sequence number, data) pairs in the linked list are:");
+        head.displayNodeData(head);
+
+        removeDuplicate(13);
+        if (head != null) {
+            System.out.println("Running removeDuplicate() on target 13");
+            head.displayNodeData(head);
+        } else {
+            System.out.println("The linked list is empty.");
+            System.out.println();
+        }
+
+        addNodeInOrder(13, 308329763);
+        System.out.println("Running addNodeInOrder() on target 13 and data 308329763");
+        head.displayNodeData(head);
+
+        removeDuplicate(14);
+        System.out.println("Running removeDuplicate() on target 14");
+        head.displayNodeData(head);
+
+        addNodeInOrder(14, 248041794);
+        System.out.println("Running addNodeInOrder() on target 14 and data 248041794");
+        head.displayNodeData(head);
+
+        removeDuplicate(14);
+        System.out.println("Running removeDuplicate() on target 14");
+        head.displayNodeData(head);
+
+        addNodeInOrder(14, 295106305);
+        System.out.println("Running addNodeInOrder() on target 14 and data 295106305");
+        head.displayNodeData(head);
+
+        removeDuplicate(15);
+        System.out.println("Running removeDuplicate() on target 15");
+        head.displayNodeData(head);
+
+        addNodeInOrder(15, 325615905);
+        System.out.println("Running addNodeInOrder() on target 15 and data 325615905");
+        head.displayNodeData(head);
+
+        removeDuplicate(16);
+        System.out.println("Running removeDuplicate() on target 16");
+        head.displayNodeData(head);
+
+        addNodeInOrder(16, 652976466);
+        System.out.println("Running addNodeInOrder() on target 16 and data 652976466");
+        head.displayNodeData(head);
+
+        removeDuplicate(17);
+        System.out.println("Running removeDuplicate() on target 17");
+        head.displayNodeData(head);
+
+        addNodeInOrder(17, 847897267);
+        System.out.println("Running addNodeInOrder() on target 17 and data 847897267");
+        head.displayNodeData(head);
+
+        removeDuplicate(17);
+        System.out.println("Running removeDuplicate() on target 17");
+        head.displayNodeData(head);
+
+        addNodeInOrder(17, 927847798);
+        System.out.println("Running addNodeInOrder() on target 17 and data 927847798");
+        head.displayNodeData(head);
+
+        System.out.println("End of run.\n");
+    }
+
+    public static void addNodeInOrder(int target, int data) {
+        if (head == null || head.getSequenceNumber(false) > target) {
+            // Insert at the beginning
+            head = new IntNode(target, data, head);
+        } else {
+            IntNode previous = head;
+            IntNode current = head.getLink();
+
+            while (current != null && current.getSequenceNumber(false) < target) {
+                previous = current;
+                current = current.getLink();
+            }
+
+            if (current == null || current.getSequenceNumber(false) > target) {
+                // Insert in the middle or at the end
+                previous.addNodeAfter(data, target);
+            } else {
+                // Duplicate found, update data
+                current.addNodeAfter(data, target);
+            }
+        }
+    }
+
+    public static void removeDuplicate(int target) {
+        IntNode previous = null;
+        IntNode current = head;
+
+        while (current != null && current.getSequenceNumber(false) != target) {
+            previous = current;
+            current = current.getLink();
+        }
+
+        if (current != null) {
+            // Remove the node
+            if (previous == null) {
+                // Node is at the head
+                head = current.getLink();
+            } else {
+                previous.removeNodeAfter();
+            }
+        }
+    }
+}

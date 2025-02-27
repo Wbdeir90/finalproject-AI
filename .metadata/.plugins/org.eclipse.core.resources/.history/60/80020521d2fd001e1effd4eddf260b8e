@@ -1,0 +1,67 @@
+
+public class HT {
+
+  public Packet[] packetHT;
+  public int arraySize;
+
+  public HT(int arrSize) {
+    arraySize = arrSize;
+    packetHT = new Packet[arrSize];
+  }
+
+  public int HashFunction(long sequenceNumber) {
+    return (int) (sequenceNumber % arraySize);
+  }
+
+  public void InsertPacket(Packet newPacket) {
+    int packetIndex = HashFunction(newPacket.getSequence());
+    while (packetHT[packetIndex] != null) {
+      packetIndex++;
+      if (packetIndex > arraySize) {
+        packetIndex = 0;
+      }
+    }
+    packetHT[packetIndex] = newPacket;
+  }
+
+  public Packet RemovePacket(Packet packet) {
+    int packetIndex = HashFunction(packet.getSequence());
+    while (packetHT[packetIndex].getSequence() != packet.getSequence()) {
+      packetIndex++;
+    }
+    Packet removedPacket = packetHT[packetIndex];
+    packetHT[packetIndex] = null;
+    System.out.println(
+      "Removing packet with sequence " +
+      packet.getSequence() +
+      " from Index " +
+      packetIndex
+    );
+    return removedPacket;
+  }
+
+  public Packet FindPacket(Packet packet) {
+    int packetIndex = HashFunction(packet.getSequence());
+    while (packetHT[packetIndex].getSequence() != packet.getSequence()) {
+      packetIndex++;
+    }
+    System.out.println(
+      "Found packet with sequence " +
+      packetHT[packetIndex].getSequence() +
+      " matching requested packet with sequence " +
+      packet.getSequence()
+    );
+    return packetHT[packetIndex];
+  }
+
+  public void DisplayPackets() {
+    System.out.println("Displaying packets in Hash Table...");
+    for (int i = 0; i < arraySize; i++) {
+      if (packetHT[i] != null) {
+        System.out.println(
+          "Packet Sequence " + packetHT[i].getSequence() + " @ Index " + i
+        );
+      }
+    }
+  }
+}

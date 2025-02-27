@@ -1,0 +1,113 @@
+
+
+public class HT {
+	
+	private Packet[] HT;
+	
+	private int arraySize;
+	
+	
+	//makes the array for the HashTable
+	public HT(int arraySize) {
+		this.arraySize = arraySize;
+		HT = new Packet[arraySize];
+	}
+	
+	private int hashFunction(long sequence) {
+		return (int) (sequence % arraySize);
+	}
+	
+	public void insertNewPacket(Packet newPacket) {
+		Packet packetAtHand = null;
+		
+		long sequence = newPacket.getSequence();
+		
+		int index = this.hashFunction(sequence);
+		
+		int endPoint = index;
+		
+		System.out.println("insertNewPacket - inserting Packet object at index: " + index);
+		
+		boolean foundHome = false;
+		
+		do {
+			if (HT[index] == null) {
+				HT[index] = newPacket;
+				foundHome = true;
+				
+			} else {
+					packetAtHand = HT[index];
+					if(!packetAtHand.isValid()) {
+						HT[index] = newPacket;
+						foundHome = true;
+			} else {
+				//search for a home on the right
+				index = (++index) % arraySize;
+			}
+		}
+		
+	} while((foundHome = false) && (index != endPoint));
+		
+	if (foundHome == false) {
+		//System.out.println("The hashtable is full, and therefore the new packet was not inserted into the hashtable");
+	}
+}
+	
+	public Packet searchPacket(long searchSequence) {
+		Packet packetAtHand = null;
+		
+		int index = this.hashFunction(searchSequence);
+		int endPoint = index;
+		
+		do {
+				packetAtHand = HT[index];
+				
+				if (packetAtHand == null) return packetAtHand;
+			
+			if (searchSequence == packetAtHand.getSequence()) {
+				return packetAtHand;
+				
+			} else {
+				index = (++index) % arraySize;
+			}
+		} while(index != endPoint);
+		
+		System.out.println("The hashtable is full, and therefore the new packet was not inserted into the hashtable");
+		return packetAtHand;
+	}
+	
+	public Packet deletePacket(long searchSequence) {
+		Packet packetAtHand = null;
+		
+		int index = this.hashFunction(searchSequence);
+		int endPoint = index;
+		
+		do {
+			packetAtHand = HT[index];
+			
+			if (packetAtHand == null) return packetAtHand;
+		
+		if (searchSequence == packetAtHand.getSequence()) {
+			System.out.println("The packet you were looking to delete is: " + index + " it is being deleted now, ");
+			HT[index] = null;
+			System.out.println("The packet at hand is now set to null");
+			return packetAtHand;
+			
+		} else {
+			index = (++index) % arraySize;
+		}
+	} while(index != endPoint);
+	
+	System.out.println("The hashtable is full, and therefore the new packet was not inserted into the hashtable");
+	return null;
+		
+	}
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
+
+import javax.swing.*;
+
+public class TaskSelectionDialogTest {
+
+    @Test
+    public void testHandleAssignTask() {
+        // Mock parent and tasksByAge
+        Parent parent = mock(Parent.class);
+        Map<String, List<String>> tasksByAge = mock(Map.class);
+        when(parent.getTasksByAge()).thenReturn(tasksByAge);
+
+        // Mock child names and tasks
+        List<String> childNames = new ArrayList<>();
+        childNames.add("Alice");
+        List<String> tasks = new ArrayList<>();
+        tasks.add("Task 1");
+        when(parent.getChildNames()).thenReturn(childNames);
+        when(tasksByAge.get(anyString())).thenReturn(tasks);
+
+        // Create dialog
+        TaskSelectionDialog dialog = new TaskSelectionDialog(null, parent);
+        dialog.updateTaskComboBox(); // Update task combo box to populate tasks
+
+        // Set mock combo box selections
+        dialog.childComboBox.setSelectedItem("Alice");
+        dialog.taskComboBox.setSelectedItem("Task 1");
+
+        // Trigger handleAssignTask method
+        dialog.handleAssignTask();
+
+        // Verify that assignTask method is called with correct arguments
+        verify(parent).assignTask("Alice", "Task 1");
+    }
+
+    // You can write more test cases for other methods in TaskSelectionDialog class
+}

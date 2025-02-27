@@ -1,0 +1,89 @@
+
+public class IntrusionDetectorClass {
+    private IntNode head;
+
+    public IntrusionDetectorClass() {
+        head = null;
+    }
+
+    public void addNodeInOrder(int target, int data) {
+        if (head == null || head.getSequenceNumber(false) > target) {
+            // Insert at the beginning
+            head = new IntNode(target, data, head);
+        } else {
+            IntNode previous = head;
+            IntNode current = head.getLink();
+
+            while (current != null && current.getSequenceNumber(false) < target) {
+                previous = current;
+                current = current.getLink();
+            }
+
+            if (current == null || current.getSequenceNumber(false) > target) {
+                // Insert in the middle or at the end
+                previous.addNodeAfter(data, target);
+            } else {
+                // Duplicate found, update data
+                current.addNodeAfter(data, target);
+            }
+        }
+    }
+
+    public void removeDuplicate(int target) {
+        IntNode previous = null;
+        IntNode current = head;
+
+        while (current != null && current.getSequenceNumber(false) != target) {
+            previous = current;
+            current = current.getLink();
+        }
+
+        if (current != null) {
+            // Remove the node
+            if (previous == null) {
+                // Node is at the head
+                head = current.getLink();
+            } else {
+                previous.removeNodeAfter();
+            }
+        }
+    }
+
+    public void displayNodeData() {
+        if (head == null) {
+            System.out.println("The linked list is empty.");
+        } else {
+            head.displayNodeData(head);
+        }
+        }
+
+            public static void main(String[] args) {
+                IntrusionDetectorClass nids = new IntrusionDetectorClass();
+
+                System.out.println("Prj1 is running.");
+
+                nids.addNodeInOrder(13, 230185386);
+                nids.displayNodeData();
+
+                nids.removeDuplicate(13);
+                nids.displayNodeData();
+
+                nids.addNodeInOrder(14, 308329763);
+                nids.displayNodeData();
+
+                nids.removeDuplicate(14);
+                nids.displayNodeData();
+
+                nids.addNodeInOrder(15, 248041794);
+                nids.displayNodeData();
+
+                nids.removeDuplicate(15);
+                nids.displayNodeData();
+
+                nids.addNodeInOrder(15, 295106305);
+                nids.displayNodeData();
+
+                System.out.println("End of run.");
+            }
+        
+}

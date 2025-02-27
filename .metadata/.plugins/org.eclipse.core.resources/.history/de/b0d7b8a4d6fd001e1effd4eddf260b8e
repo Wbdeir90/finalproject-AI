@@ -1,0 +1,31 @@
+package HashProject;
+
+//Luca Cheachirini worked with Brenner Smith
+
+
+public class Packet {
+	
+	int sequenceNum;
+	String protocol;
+	int portField;
+	private boolean validRecord;
+	
+	public Packet(int sequenceNum, String protocol, int portField) {
+		this.sequenceNum = sequenceNum;
+		this.protocol = protocol;
+		this.portField = portField;
+		validRecord = true;
+	}
+	
+	public int getSequenceNum() {
+		return this.sequenceNum;
+	}
+	
+	public boolean isValid() {
+		return validRecord;
+	}
+	
+	public int getPortField() {
+		return this.portField;
+	}
+}

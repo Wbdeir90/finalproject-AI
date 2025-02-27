@@ -1,0 +1,413 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// Represents a task to be completed by a child
+class Task {
+    private String name;
+    private boolean completed;
+    private Child assignedTo;
+
+    public Task(String name, Child assignedTo) {
+        this.name = name;
+        this.assignedTo = assignedTo;
+        this.completed = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void markAsCompleted() {
+        completed = true;
+    }
+
+    public Child getAssignedTo() {
+        return assignedTo;
+    }
+}
+
+// Represents a child with tasks and achievements
+class Child {
+    private String name;
+    private int age;
+    private List<Task> tasks;
+    private int achievements;
+    private String username;
+
+    public Child(String name, int age, String username) {
+        this.name = name;
+        this.age = age;
+        this.username = username;
+        this.tasks = new ArrayList<>();
+        this.achievements = 0;
+    }
+
+    // Setter method for username
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // Getter method for username
+    public String getUsername() {
+        return username;
+    }
+
+    // Method to assign a task to the child
+    public void assignTask(String taskName) {
+        Task task = new Task(taskName, this);
+        tasks.add(task);
+    }
+
+    // Method to get the list of tasks assigned to the child
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    // Method to mark a task as completed and increment achievements
+    public void completeTask(Task task) {
+        task.markAsCompleted();
+        achievements++;
+    }
+
+    // Getter method for achievements
+    public int getAchievements() {
+        return achievements;
+    }
+
+    // Method to suggest a prize based on achievements
+    public String suggestPrize() {
+        int achievements = getAchievements();
+        if (achievements >= 5) {
+            return "Great job! You've earned a special prize!\n 'Later bedtime, Stickers, Candy, and Ice cream'";
+        } else if (achievements >= 3) {
+            return "Well done! You deserve a small treat!";
+        } else {
+            return "Keep up the good work!";
+        }
+    }
+
+    // Override toString method to display child's name
+    @Override
+    public String toString() {
+        return "Child: " + name + ", Age: " + age;
+    }
+
+    // Getter method for child's name
+    public String getName() {
+        return name;
+    }
+
+    // Getter method for child's age
+    public int getAge() {
+        return age;
+    }
+}
+
+// Represents a parent with children and authentication
+class Parent {
+    private String username;
+    private String password;
+    private List<Child> children;
+
+    public Parent(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.children = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void addChild(String name, int age) {
+        children.add(new Child(name, age, name));
+    }
+
+    public List<Child> getChildren() {
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Parent: " + username;
+    }
+
+    public boolean authenticate(String username, String password) {
+        return this.username.equals(username) && this.password.equals(password);
+    }
+}
+
+// Represents a panel for tracking child achievements
+class AchievementTrackingPanel extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private Parent currentParent;
+
+    public AchievementTrackingPanel(Parent parent) {
+        this.currentParent = parent;
+        setTitle("Achievement Tracking");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        createAchievementList();
+    }
+
+    private void createAchievementList() {
+        JPanel achievementPanel = new JPanel();
+        achievementPanel.setLayout(new GridLayout(0, 3));
+
+        for (Child child : currentParent.getChildren()) {
+            int achievedCount = countAchievedTasks(child);
+            JLabel childLabel = new JLabel(child.toString());
+            JLabel countLabel = new JLabel("Achievements: " + child.getAchievements());
+            childLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            countLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            achievementPanel.add(childLabel);
+            achievementPanel.add(countLabel);
+        }
+        getContentPane().add(achievementPanel);
+    }
+
+    private int countAchievedTasks(Child child) {
+        List<Task> tasks = child.getTasks();
+        int achievedCount = 0;
+        for (Task task : tasks) {
+            if (task.isCompleted()) {
+                achievedCount++;
+            }
+        }
+        return achievedCount;
+    }
+}
+
+public class ChildTaskTrackingApp {
+    private JFrame frame;
+    private Parent currentParent;
+    private List<Parent> parentsList = new ArrayList<>();
+    private JComboBox<String> childSelectionCombo;
+    private List<String> childNames = new ArrayList<>();
+    private static ChildTaskTrackingApp instance;
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            ChildTaskTrackingApp.getInstance();
+        });
+    }
+
+    public static ChildTaskTrackingApp getInstance() {
+        if (instance == null) {
+            instance = new ChildTaskTrackingApp();
+        }
+        return instance;
+    }
+
+    private ChildTaskTrackingApp() {
+        frame = new JFrame("Child Task Tracking App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        currentParent = null;
+        frame.setVisible(true);
+        createLoginPanel();
+    }
+
+    private void createChildPanel() {
+        JPanel childPanel = new JPanel();
+        childPanel.setLayout(new GridLayout(4, 1));
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createParentPanel();
+            }
+        });
+
+        JButton assignTaskButton = new JButton("Assign Task");
+        assignTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedChildName = (String) childSelectionCombo.getSelectedItem();
+                Child selectedChildObject = null;
+
+                for (Child child : currentParent.getChildren()) {
+                    if (child.getName().equals(selectedChildName)) {
+                        TaskAssignmentDialog dialog = new TaskAssignmentDialog(frame, child);
+                        dialog.updateTaskList();
+                        dialog.setVisible(true);
+                        return;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Child not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        childPanel.add(assignTaskButton);
+        childPanel.add(backButton);
+        childPanel.add(exitButton);
+
+        frame.setContentPane(childPanel);
+        frame.revalidate();
+        frame.repaint();
+        frame.setVisible(true);
+    }
+
+    private void createParentPanel() {
+        JPanel parentPanel = new JPanel();
+        parentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        createAddChildPanel();
+        createAssignTaskPanel();
+        createSwitchToChildButton();
+        createTrackAchievementButton();
+        createSuggestPrizeButton();
+        createExitButton();
+
+        frame.setContentPane(parentPanel);
+        frame.revalidate();
+        frame.repaint();
+        frame.setVisible(true);
+    }
+
+    private void createAddChildPanel() {
+        JPanel addChildPanel = new JPanel();
+        JLabel childNameLabel = new JLabel("Child's Name:");
+        JTextField childNameField = new JTextField(20);
+
+        JLabel childAgeLabel = new JLabel("Child's Age:");
+        JTextField childAgeField = new JTextField(5);
+
+        JButton addChildButton = new JButton("Add Child");
+        addChildButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String childName = JOptionPane.showInputDialog(frame, "Enter child's name:");
+                String childAgeStr = JOptionPane.showInputDialog(frame, "Enter child's age:");
+                if (childName != null && !childName.isEmpty() && childAgeStr != null && !childAgeStr.isEmpty()) {
+                    try {
+                        int childAge = Integer.parseInt(childAgeStr);
+                        currentParent.addChild(childName, childAge);
+                        childSelectionCombo.addItem(childName);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(frame, "Invalid age format. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Invalid child name or age.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        addChildPanel.add(childNameLabel);
+        addChildPanel.add(childNameField);
+        addChildPanel.add(childAgeLabel);
+        addChildPanel.add(childAgeField);
+        addChildPanel.add(addChildButton);
+    }
+
+    private void createAssignTaskPanel() {
+        JPanel assignTaskPanel = new JPanel();
+        JButton assignTaskButton = new JButton("Assign Task");
+
+        assignTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedChildName = (String) childSelectionCombo.getSelectedItem();
+                Child selectedChildObject = null;
+
+                for (Child child : currentParent.getChildren()) {
+                    if (child.getName().equals(selectedChildName)) {
+                        TaskAssignmentDialog dialog = new TaskAssignmentDialog(frame, child);
+                        dialog.updateTaskList();
+                        dialog.setVisible(true);
+                        return;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Child not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        childSelectionCombo = new JComboBox<>();
+
+        for (Parent parent : parentsList) {
+            for (Child child : parent.getChildren()) {
+                childSelectionCombo.addItem(child.getName());
+            }
+        }
+
+        assignTaskPanel.add(childSelectionCombo);
+        assignTaskPanel.add(assignTaskButton);
+    }
+
+    private void createSwitchToChildButton() {
+        JButton switchToChildButton = new JButton("Switch to Child Panel");
+        switchToChildButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createChildPanel();
+            }
+        });
+    }
+
+    private void createTrackAchievementButton() {
+        JButton trackAchievementButton = new JButton("Track Achievement");
+        trackAchievementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AchievementTrackingPanel achievementPanel = new AchievementTrackingPanel(currentParent);
+                achievementPanel.setVisible(true);
+            }
+        });
+    }
+
+    private void createSuggestPrizeButton() {
+        JButton suggestPrizeButton = new JButton("Suggest Prize");
+
+        suggestPrizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedChildName = (String) childSelectionCombo.getSelectedItem();
+
+                for (Child child : currentParent.getChildren()) {
+                    if (child.getName().equals(selectedChildName)) {
+                        String prizeSuggestion = child.suggestPrize();
+                        JOptionPane.showMessageDialog(frame, prizeSuggestion, "Prize Suggestion", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Child not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void createExitButton() {
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+}

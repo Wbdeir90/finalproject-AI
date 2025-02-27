@@ -1,0 +1,79 @@
+// Represents a parent with children and authentication
+
+import java.io.PrintStream;
+
+class Parent {
+    private String username;
+    private String password;
+    private List<Child> children;
+
+    public Parent(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.children = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void addChild(String name) {
+        children.add(new Child(name, name));
+    }
+
+    public List<Child> getChildren() {
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Parent:" + username;
+    }
+
+    public boolean authenticate(String username, String password) {
+        return this.username.equals(username) && this.password.equals(password);
+    }
+}
+private void updateTaskList() {
+    Object ageGroupComboBox;
+	String selectedAgeGroup = (String) ((Object) ageGroupComboBox).getSelectedItem();
+    PrintStream taskListTextArea;
+	((Object) taskListTextArea).setText(""); // Clear the existing text
+
+    Object tasksByAge;
+	for (String task : ((Object) tasksByAge).get(selectedAgeGroup)) {
+        taskListTextArea.append(task + "\n");
+    }
+}
+
+private void checkIfChildIsDone() {
+    Object ageGroupComboBox;
+	String selectedAgeGroup = (String) ((Object) ageGroupComboBox).getSelectedItem();
+    Object taskStatusByAge;
+	Map<String, Boolean> taskStatus = taskStatusByAge.get(selectedAgeGroup);
+
+    boolean allTasksCompleted = true;
+
+    for (boolean isCompleted : taskStatus.values()) {
+        if (!isCompleted) {
+            allTasksCompleted = false;
+            break;
+        }
+    }
+
+    if (allTasksCompleted) {
+        // Assuming you have a method to mark the child as done or handle completion
+        handleChildCompletion();
+    }
+}
+
+private void handleChildCompletion() {
+    // Implement the logic to handle child completion, e.g., show a message, update UI, etc.
+    // You can customize this method based on your application's requirements.
+    System.out.println("Child is done with all tasks!");
+}
+}

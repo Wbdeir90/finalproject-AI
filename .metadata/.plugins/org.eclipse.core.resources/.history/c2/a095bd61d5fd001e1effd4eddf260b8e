@@ -1,0 +1,74 @@
+public class HT {
+
+
+    private Packet[] packets;
+    private Packet[] arraySize;
+
+
+    public HT(int arraySize) {
+        this.arraySize = new Packet[arraySize];
+        packets = new Packet[arraySize];
+    }
+
+    priavte int Hashfunction(long seqNum){
+        return (int)(seqNum % arraySize);
+    }
+
+    public void insertpacket(Packet packet) {
+        Packet packetAthand = null;
+        long seqNum = packet.getSeqNum();
+        int index = this.Hashfunction(seqNum);
+        int endPoint = index;
+
+
+        do {
+            if (packets[index] == null) {
+                packets[index] = packet;
+                foundHome = true;
+            } else {
+                packetAtHand = Packet[index];
+                if (!packetAtHand.isValid()) {
+                    Packet[index] = packet;
+                    foundHome = true;
+                } else {
+                    // search for a home on the right;
+                    index = (++index) % arraySize;
+                }
+            }
+        } while ((foundHome == false) && (index != endPoint));
+
+        if (foundHome == false) {
+            System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+        }
+    }
+
+    public Packet searchPacket(long searchNumSeq) {
+        Packet packetAtHand = null;
+
+        int index = this.hashFunction(searchseqNum);
+
+        int endPoint = index;
+
+        do {
+            packetAtHand = packet[index];
+
+            if (packetAtHand == null) return packetAtHand;
+
+            if (searchseqNum == packketAtHand.getseqNum()) {
+                return packetAtHand;
+            } else {
+                index = (++index) % arraySize;
+            }
+        } while (index != endPoint);
+
+        System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+
+        return null;
+    }
+
+    System.out.println("insertNewRecord - inserting PersonRecord object at index: " + index);
+
+    boolean foundHome = false;
+    }
+
+}

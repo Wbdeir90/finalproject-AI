@@ -1,0 +1,53 @@
+
+public class packetRepository {
+    public static  void main(String [] args) {
+
+        Packet packet1 = new Packet(999, "TCP", 7);
+        Packet packet2 = new Packet(104, "TCP", 404);
+        Packet packet3 = new Packet(1001, "TCP", 20);
+        Packet packet4 = new Packet(1023, "TCP", 21);
+        Packet packet5 = new Packet(845, "TCP", 22);
+        Packet packet6 = new Packet(762, "TCP", 23);
+        Packet packet7 = new Packet(1500, "TCP", 25);
+        Packet packet8 = new Packet(16, "TCP", 53);
+        Packet packet9 = new Packet(401, "UDP", 69);
+        Packet packet10 = new Packet(508, "TCP", 80);
+        Packet packet11 = new Packet(112, "UDP", 88);
+        Packet packet12 = new Packet(784, "TCP", 110);
+        Packet packet13 = new Packet(1, "UDP", 691);
+        Packet packet14 = new Packet(423, "UDP", 1194);
+        Packet packet15 = new Packet(10, "UDP", 1725);
+        Packet packet16 = new Packet(5, "TCP", 9100);
+
+
+        HT packetbank = new HT();
+        packetbank.insertPacket(packet1);
+        packetbank.insertPacket(packet2);
+        packetbank.insertPacket(packet3);
+        packetbank.insertPacket(packet4);
+        packetbank.insertPacket(packet5);
+        packetbank.insertPacket(packet6);
+        packetbank.insertPacket(packet7);
+        packetbank.insertPacket(packet8);
+        packetbank.insertPacket(packet9);
+        packetbank.insertPacket(packet10);
+        packetbank.insertPacket(packet11);
+        packetbank.insertPacket(packet12);
+        packetbank.insertPacket(packet13);
+        packetbank.insertPacket(packet14);
+        packetbank.insertPacket(packet15);
+        packetbank.insertPacket(packet16);
+
+
+        System.out.println("--------------------");
+        packetbank.SearchPacket(10);
+        System.out.println("--------------------");
+
+
+        packetbank.deletePacket(11);
+
+
+    }
+
+}
+

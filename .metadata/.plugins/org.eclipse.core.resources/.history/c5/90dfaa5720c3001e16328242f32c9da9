@@ -1,0 +1,37 @@
+// Represents a parent with children and authentication
+class Parent {
+    private String username;
+    private String password;
+    private List<Child> children;
+
+    public Parent(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.children = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void addChild(String name) {
+        children.add(new Child(name, name));
+    }
+
+    public List<Child> getChildren() {
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Parent:" + username;
+    }
+
+    public boolean authenticate(String username, String password) {
+        return this.username.equals(username) && this.password.equals(password);
+    }
+}

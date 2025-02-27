@@ -1,0 +1,37 @@
+
+package HashPPackage;
+
+//Intro and getting all the classes ready 
+public class Packet {
+    private String name;
+    private long key; // Phone number
+    private int yearsWorked; 
+    private String hobby; 
+    private String favoriteColor; 
+    private String favoriteCar; 
+    private boolean correctInformation;
+
+  //Getting it all together
+    public Packet(long key, String name, int yearsWorked, String hobby, String favoriteColor, String favoriteCar) {
+        this.key = key;
+        this.name = name;
+        this.yearsWorked = yearsWorked;
+        this.hobby = hobby;
+        this.favoriteColor = favoriteColor;
+        this.favoriteCar = favoriteCar;
+        this.correctInformation = true;
+    }
+
+    public long getKey() {
+        return this.key;
+    }
+
+    public boolean isValid() {
+        return correctInformation;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+}
+//////////////////////////End of Project 5

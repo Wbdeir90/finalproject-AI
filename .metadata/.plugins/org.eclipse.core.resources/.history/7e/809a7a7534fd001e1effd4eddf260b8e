@@ -1,0 +1,30 @@
+public class packetRepository {
+    public static void main(String[] args) {
+        // Creating a hash table of size 1000
+        HT hashTable = new HT(1000);
+
+        // Creating Packet objects
+        Packet packet1 = new Packet(12345, "TCP", 8080);
+        Packet packet2 = new Packet(54321, "UDP", 9090);
+
+        // Inserting Packet objects into the hash table
+        hashTable.insert(packet1);
+        hashTable.insert(packet2);
+
+        // Searching for a Packet
+        long searchSequenceNumber = 12345;
+        Packet foundPacket = hashTable.search(searchSequenceNumber);
+        if (foundPacket != null) {
+            System.out.println("Packet found: Sequence Number = " + foundPacket.getSequenceNumber() +
+                    ", Protocol = " + foundPacket.getProtocol() +
+                    ", Port = " + foundPacket.getPort());
+        } else {
+            System.out.println("Packet not found with sequence number " + searchSequenceNumber);
+        }
+
+        // Deleting a Packet
+        long deleteSequenceNumber = 54321;
+        hashTable.delete(deleteSequenceNumber);
+        System.out.println("Packet with sequence number " + deleteSequenceNumber + " deleted.");
+    }
+}

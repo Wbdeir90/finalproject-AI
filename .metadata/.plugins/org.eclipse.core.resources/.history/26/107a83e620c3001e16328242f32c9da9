@@ -1,0 +1,48 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
+
+public class TaskSelectionDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+    private Map<String, Boolean> taskStatus;
+
+    public TaskSelectionDialog(JFrame parentFrame, List<String> tasks, Map<String, Boolean> initialTaskStatus) {
+        super(parentFrame, "Select Tasks", true);
+        this.taskStatus = new HashMap<>(initialTaskStatus);
+
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+
+        for (String task : tasks) {
+            JCheckBox checkBox = new JCheckBox(task, taskStatus.get(task));
+            panel.add(checkBox);
+        }
+
+        JButton doneButton = new JButton("Done");
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Component component : panel.getComponents()) {
+                    if (component instanceof JCheckBox) {
+                        JCheckBox checkBox = (JCheckBox) component;
+                        taskStatus.put(checkBox.getText(), checkBox.isSelected());
+                    }
+                }
+                dispose();
+            }
+        });
+
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
+        getContentPane().add(doneButton, BorderLayout.SOUTH);
+
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    public Map<String, Boolean> getTaskStatus() {
+        return taskStatus;
+    }
+}

@@ -1,0 +1,34 @@
+
+
+public class HT {
+	
+	private Packet[] packet;
+	
+	private int size; 
+	
+	public HT(int size) {
+		this.size = size; 
+		packet = new Packet[size]; 
+	}
+	
+	public void insert(Packet packet) {
+		int index = hash(packet.getSequenceNum());
+		
+		
+	}
+
+	private int hash(long sequenceNum) {
+		
+		return 0;
+	}
+	
+	public void delete(long SequenceNum) {
+		int index = hash(SequenceNum); 
+		
+	}
+	
+	
+	
+	
+
+}

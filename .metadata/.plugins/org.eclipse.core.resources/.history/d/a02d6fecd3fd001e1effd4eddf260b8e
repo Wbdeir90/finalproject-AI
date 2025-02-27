@@ -1,0 +1,101 @@
+public class HT {
+    
+    private Packet[] HT;
+    private int array_Size;
+
+
+    public HT(int array_Size){
+        this.array_Size = array_Size;
+        HT = new Packet[array_Size];
+    }
+    
+
+    public int hash_Function(long seq_Number){
+        
+        int packet_Index;
+
+        packet_Index = (int)(seq_Number % array_Size);
+        return packet_Index;
+    }
+
+
+    public void insert_new_Packet(Packet new_Packet){
+        
+        Packet current_Packet = null;
+        long seq_Number = new_Packet.get_Packet();
+        int index = this.hash_Function(seq_Number);
+        int endpoint = index;
+
+        boolean packet_resides_in_HT = false;
+        
+        do{
+            if(HT[index] == null){
+                HT[index] = new_Packet;
+                packet_resides_in_HT =true;
+            }
+            else{
+                current_Packet = HT[index];
+                if(!current_Packet.Entered()){
+                    HT[index] = new_Packet;
+                    packet_resides_in_HT = true;
+                }
+                else{
+                    //search next index to the right
+                    index = (++index) % array_Size;
+                }
+            }
+        }while((packet_resides_in_HT == false) && (index != endpoint));
+
+        System.out.println("Insert_New_Packet: " + seq_Number + " - inserting new Packet Object at index: " + index + "\nPacket Inserted into HashTable: " + packet_resides_in_HT + "\n");
+        
+        if(packet_resides_in_HT == false){
+            System.out.println("The HashTable is full: new Packet could not be inserted into HashTable!");
+        }
+    }
+
+
+    public boolean delete_Packet(Packet deleted_Packet){
+
+        long seq_Number = deleted_Packet.get_Packet();
+        int index = this.hash_Function(seq_Number);
+
+        Packet packet_Deletion = searchPacket(seq_Number);
+        
+        if(packet_Deletion != null){
+            Packet empty_Packet_Marker = new Packet(0,"",0);
+            HT[index] = empty_Packet_Marker;
+            System.out.println("-The Packet with sequence Number: " + seq_Number + " was deleted from the HashTable!\n");
+            return true;
+        }
+        else{
+            System.out.println("The Packet with sequence Number: " + seq_Number + " was never inserted in the HashTable!");
+            return false;
+        }
+        
+    }
+    
+
+    public Packet searchPacket(long search_seq_Number){
+       
+        Packet current_Packet = null;
+        int index = this.hash_Function(search_seq_Number);
+        int endpoint = index;
+
+        do{
+            current_Packet = HT[index];
+            if(current_Packet == null){
+                 return current_Packet;
+            }
+            if(search_seq_Number == current_Packet.get_Packet()) {
+                return current_Packet;
+            }
+            else{
+                index = (++index) % array_Size;
+            }
+            
+        }while(index != endpoint);
+        System.out.println("The Packet with sequence Number: " + search_seq_Number + " was never inserted in the HashTable!");
+        return null;
+    }
+}
+

@@ -1,0 +1,33 @@
+public class HT {
+    private Packet[] table;
+
+    public HT(int size) {
+        table = new Packet[size];
+    }
+
+    public void insert(Packet packet) {
+        int index = hash(packet.getSequenceNumber());
+        if (table[index] == null) {
+            table[index] = packet;
+        } else {
+            // Handle collision (e.g., by chaining or probing)
+            // For simplicity, let's just print an error message here
+            System.err.println("Collision occurred at index " + index);
+        }
+    }
+
+    public Packet search(long sequenceNumber) {
+        int index = hash(sequenceNumber);
+        return table[index];
+    }
+
+    public void delete(long sequenceNumber) {
+        int index = hash(sequenceNumber);
+        table[index] = null;
+    }
+
+    private int hash(long sequenceNumber) {
+        // Simple hash function: modulus of sequence number by table length
+        return (int) (sequenceNumber % table.length);
+    }
+}

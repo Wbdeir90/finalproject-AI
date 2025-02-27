@@ -1,0 +1,125 @@
+package com.example.childtask;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.example.childtask.Child;
+
+class TaskAssignmentDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+    private Child child;
+    private JTextField taskNameField;
+    private JComboBox<String> ageGroupComboBox;
+    private JTextArea taskListTextArea;
+    private Map<String, List<String>> tasksByAge;
+    private Map<String, Map<String, Boolean>> taskStatusByAge;
+
+    public TaskAssignmentDialog(JFrame parentFrame, Child child) {
+        super(parentFrame, "Assign Tasks to Child", true);
+        this.child = child;
+        taskNameField = new JTextField(20);
+        tasksByAge = createTasksByAgeMap();
+        taskStatusByAge = createTaskStatusByAgeMap();
+
+        ageGroupComboBox = new JComboBox<>(tasksByAge.keySet().toArray(new String[0]));
+
+        JButton assignButton = new JButton("Assign Task");
+        taskListTextArea = new JTextArea(5, 20);
+        taskListTextArea.setEditable(false);
+
+        ageGroupComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTaskList();
+            }
+        });
+
+        assignButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedAgeGroup = (String) ageGroupComboBox.getSelectedItem();
+                Map<String, Boolean> taskStatus = taskStatusByAge.get(selectedAgeGroup);
+
+                for (String task : tasksByAge.get(selectedAgeGroup)) {
+                    if (!taskStatus.containsKey(task)) {
+                        taskStatus.put(task, false);
+                    }
+                }
+                // Assuming TaskSelectionDialog is correctly implemented
+                TaskSelectionDialog selectionDialog = new TaskSelectionDialog(parentFrame, tasksByAge.get(selectedAgeGroup), taskStatus);
+                selectionDialog.setVisible(true);
+
+                taskStatusByAge.put(selectedAgeGroup, selectionDialog.getTaskStatus());
+
+                updateTaskList();
+                checkIfChildIsDone();
+            }
+        });
+
+        JPanel panel = new JPanel(new GridLayout(4, 1));
+        panel.add(new JLabel("Choose Child's Age Range:"));
+        panel.add(ageGroupComboBox);
+        panel.add(assignButton);
+        panel.add(new JScrollPane(taskListTextArea));
+        getContentPane().add(panel);
+        pack();
+        setLocationRelativeTo(null);
+        updateTaskList();
+    }
+
+    private Map<String, List<String>> createTasksByAgeMap() {
+        Map<String, List<String>> tasksByAge = new HashMap<>();
+
+        tasksByAge.put("3-6", List.of(
+                "Make their bed",
+                "Empty wastebaskets",
+                "Bring in mail or newspaper",
+                "Clear table",
+                "Pull weeds, if you have a garden",
+                "Water flowers"
+        ));
+
+        tasksByAge.put("7-9", List.of(
+                "Load dishwasher",
+                "Put away groceries",
+                "Vacuum",
+                "Help make dinner",
+                "Make own snacks",
+                "Wash table after meals",
+                "Put away own laundry"
+        ));
+
+        tasksByAge.put("10-12", List.of(
+                "Unload dishwasher",
+                "Fold laundry",
+                "Clean bathroom",
+                "Wash windows",
+                "Cook simple meal with supervision",
+                "Iron clothes",
+                "Do laundry"
+        ));
+
+        return tasksByAge;
+    }
+
+    private Map<String, Map<String, Boolean>> createTaskStatusByAgeMap() {
+        Map<String, Map<String, Boolean>> taskStatusByAge = new HashMap<>();
+
+        for (String ageGroup : createTasksByAgeMap().keySet()) {
+            taskStatusByAge.put(ageGroup, new HashMap<>());
+        }
+
+        return taskStatusByAge;
+    }

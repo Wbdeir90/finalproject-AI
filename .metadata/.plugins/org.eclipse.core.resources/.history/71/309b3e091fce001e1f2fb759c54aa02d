@@ -1,0 +1,81 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TaskSelectionDialog extends JDialog {
+    private JComboBox<String> childComboBox;
+    private JComboBox<String> ageGroupComboBox;
+    private JComboBox<String> taskComboBox;
+    private Map<String, List<String>> tasksByAge;
+    private Parent parent;
+
+    public TaskSelectionDialog(JFrame parentFrame, Parent parent) {
+        super(parentFrame, "Assign Tasks to Child", true);
+        this.parent = parent;
+        tasksByAge = createTasksByAgeMap();
+
+        JPanel panel = new JPanel(new GridLayout(6, 2));
+
+        JLabel childLabel = new JLabel("Select Child:");
+        childComboBox = new JComboBox<>(parent.getChildNames().toArray(new String[0]));
+
+        JLabel ageGroupLabel = new JLabel("Select Age Group:");
+        ageGroupComboBox = new JComboBox<>(tasksByAge.keySet().toArray(new String[0]));
+
+        JLabel taskLabel = new JLabel("Select Task:");
+        taskComboBox = new JComboBox<>();
+
+        JButton addChildButton = new JButton("Add Child");
+        addChildButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openChildSelectionDialog();
+            }
+        });
+
+        JButton assignButton = new JButton("Assign Task");
+        assignButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleAssignTask();
+            }
+        });
+
+        panel.add(childLabel);
+        panel.add(childComboBox);
+        panel.add(ageGroupLabel);
+        panel.add(ageGroupComboBox);
+        panel.add(taskLabel);
+        panel.add(taskComboBox);
+        panel.add(new JLabel()); // Empty label as spacer
+        panel.add(addChildButton);
+        panel.add(new JLabel()); // Empty label as spacer
+        panel.add(assignButton);
+
+        getContentPane().add(panel);
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    private void openChildSelectionDialog() {
+        ChildSelectionDialog childSelectionDialog = new ChildSelectionDialog(this, parent, null, null);
+        childSelectionDialog.setVisible(true);
+    }
+
+    private void handleAssignTask() {
+        // Implement the logic to handle task assignment
+    }
+
+    private Map<String, List<String>> createTasksByAgeMap() {
+        // Implement the logic to create tasks by age map
+        return new HashMap<>();
+    }
+
+    public void updateChildComboBox() {
+        childComboBox.setModel(new DefaultComboBoxModel<>(parent.getChildNames().toArray(new String[0])));
+    }
+}

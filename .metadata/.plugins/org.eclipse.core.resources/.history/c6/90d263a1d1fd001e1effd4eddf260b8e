@@ -1,0 +1,37 @@
+
+
+
+public class packetRepository {
+
+    public static void main(String[] args) {
+
+        System.out.println("This system works with a hash table to store, search for, and remove packets");
+
+        HT PacketHT = new HT(100);
+
+        Packet Oakland_edu  = new Packet(2, "UDP", 6);
+
+        Packet Oakland_Biology = new Packet(22, "TCP", 10);
+
+        PacketHT.insertPacket(Oakland_edu);
+        PacketHT.insertPacket(Oakland_Biology);
+
+        Packet result = PacketHT.search(2);
+
+        if (result != null) {
+            System.out.println("Packet Found, the Port Field is: " + result.getPortField()); 
+        } else {
+            System.out.println("The search did not find the object at hand");
+        }
+
+        PacketHT.removePacket(2);
+        Packet newResult = PacketHT.search(2);
+
+        if (newResult != null) {
+            System.out.println("Packet Found, the Port Field is: " + newResult.getPortField()); 
+        } else {
+            System.out.println("The search did not find the object at hand");
+        }
+
+    }
+}

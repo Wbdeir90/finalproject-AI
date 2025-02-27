@@ -1,0 +1,34 @@
+
+public class packetRepository {
+private String protocol;
+	
+	public long sequence;
+	
+	private int port;
+	
+	public boolean validRecord;
+	
+	public packetRepository( long sequence, String protocol, int port) {
+		  this.protocol = protocol;
+		  this.sequence = sequence;
+		  this.port = port;
+
+		  
+		  validRecord = true;
+		  
+		 
+	}
+	
+	public long getKey() {
+		 return this.sequence;
+	
+	}
+	
+	public boolean isValid() {
+		 return validRecord;
+	}
+	
+	public String getName() {
+		 return this.protocol;
+	}
+}

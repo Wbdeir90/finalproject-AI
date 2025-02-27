@@ -1,0 +1,62 @@
+
+public class packetRepository {
+
+//Intro to code 
+	   public static void main(String[] args) {
+	        System.out.println("This code is for project 5 and it will use Hash Tables!");
+            System.out.println("--------------------------------------------------------");
+
+ //Getting all the names together           
+	        HT Client = new HT(134);
+	        HashPPackage Cindy = new HashPPackage(5863526984L, "Cindy Ross", 9, "Drawing", "Red", "Toyota");
+	        HashPPackage Dillan = new HashPPackage(5864457821L, "Dillan Hilbin", 33, "Reading",  "Blue", "Ford");
+	        HashPPackage Amy = new HashPPackage(5862331896L, "Amy Kenwin", 12, "Knitting",  "Green", "");
+	        HashPPackage Marteno = new HashPPackage(5869445617L, "Marteno Romaya", 11, "Building",  "Yellow", "GMC");
+	        HashPPackage Aaron = new HashPPackage(5867118642L, "Aaron Weld", 5, "Surfing",  "Gold", "Acura");
+	        HashPPackage Jimmi = new HashPPackage(5861006504L, "Jimmi Briggs", 40, "Welding",  "Purple", "Audi");
+	        HashPPackage Alena = new HashPPackage(5864706587L, "Alena Malvoy", 10, "Crafting",  "Pink", "Cadillac");
+
+//Adding them all in	        
+	        Client.insertPacket(Cindy);
+	        Client.insertPacket(Dillan); 
+	        Client.insertPacket(Amy);
+	        Client.insertPacket(Marteno);
+	        Client.insertPacket(Aaron);
+	        Client.insertPacket(Jimmi);
+	        Client.insertPacket(Alena);
+	        
+//Searching for Marteno 
+	        HashPPackage result = Client.searchingPacket(5869445617L);
+
+//If found or not	        
+	        if (result != null) {
+	        	System.out.println();
+	            System.out.println("The packet was found! The name of it is: " + result.getName());
+	            System.out.println("--------------------------------------------------------");
+	            System.out.println();
+	        } else {
+	        	System.out.println();
+	            System.out.println("The search did not find the packet you wanted.."); 
+	            System.out.println("--------------------------------------------------------");
+	            System.out.println();
+	            System.out.println("--------------------------------------------------------");
+	        }
+	        
+//Deleting and searching for Marteno
+	        Client.deletePacket(5869445617L);
+	        result = Client.searchingPacket(5869445617L);
+
+//Seeing if found or not 	       
+	        if (result != null) {
+	        	System.out.println();
+	            System.out.println("Packet found after deletion. The name is: " + result.getName());
+	            System.out.println("--------------------------------------------------------");
+	            System.out.println();
+	        } else {
+	            System.out.println("The search did not find the packet you are looking for.");
+	            System.out.println("--------------------------------------------------------");
+	            System.out.println();
+	        }
+	    }
+	}
+//////////////////////////End of Project 5

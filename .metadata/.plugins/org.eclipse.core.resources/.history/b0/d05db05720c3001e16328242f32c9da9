@@ -1,0 +1,70 @@
+// Represents a child with tasks and achievements
+class Child {
+    private String name;
+    private List<Task> tasks;
+    private int achievements;
+    private String username;
+    private int age;
+
+    public Child(String name, String username) {
+        this.name = name;
+        this.username = username;
+        this.tasks = new ArrayList<>();
+        this.achievements = 0;
+    }
+
+    // Setter method for username
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // Getter method for username
+    public String getUsername() {
+        return username;
+    }
+
+    // Method to assign a task to the child
+    public void assignTask(String taskName, Child child) {
+        Task task = new Task(taskName, child);
+        tasks.add(task);
+    }
+
+    // Method to get the list of tasks assigned to the child
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    // Method to mark a task as completed and increment achievements
+    public void completeTask(Task task) {
+        task.markAsCompleted();
+        achievements++;
+    }
+
+    // Getter method for achievements
+    public int getAchievements() {
+        return achievements;
+    }
+
+    // Method to suggest a prize based on achievements
+    public String suggestPrize() {
+        int achievements = getAchievements();
+        if (achievements >= 5) {
+            return "Great job! You've earned a special prize!\n 'Later bedtime, Stickers, Candy, and Ice cream'";
+        } else if (achievements >= 3) {
+            return "Well done! You deserve a small treat!";
+        } else {
+            return "Keep up the good work!";
+        }
+    }
+
+    // Override toString method to display child's name
+    @Override
+    public String toString() {
+        return "Child:" + name;
+    }
+
+    // Getter method for child's name
+    public String getName() {
+        return name;
+    }
+}

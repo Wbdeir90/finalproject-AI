@@ -1,0 +1,156 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ChildTaskTrackingApp {
+    private JFrame frame;
+    private List<Parent> parentsList = new ArrayList<>();
+    private JTextField newUsernameField;
+    private JPasswordField newPasswordField;
+    private JPasswordField repeatPasswordField;
+    private static ChildTaskTrackingApp instance;
+
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$";
+
+    public static void main(String[] args) {
+        getInstance();
+    }
+
+    private ChildTaskTrackingApp() {
+        initializeFrame("Child Task Tracking App", 400, 300);
+        createLoginPanel();
+    }
+
+    public static ChildTaskTrackingApp getInstance() {
+        if (instance == null) {
+            instance = new ChildTaskTrackingApp();
+        }
+        return instance;
+    }
+
+    private void initializeFrame(String title, int width, int height) {
+        frame = new JFrame(title);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(width, height);
+        frame.setVisible(true);
+    }
+
+    private void createLoginPanel() {
+        JPanel loginPanel = new JPanel(new GridLayout(4, 2));
+
+        JLabel usernameLabel = new JLabel("Username:");
+        JLabel passwordLabel = new JLabel("Password:");
+        JTextField usernameField = new JTextField(20);
+        JPasswordField passwordField = new JPasswordField(20);
+        JButton loginButton = new JButton("Login");
+        JButton signUpButton = new JButton("Sign-Up");
+
+        loginButton.addActionListener(e -> authenticateUser(usernameField.getText(), new String(passwordField.getPassword())));
+        signUpButton.addActionListener(e -> createSignUpPanel());
+
+        addComponentsToPanel(loginPanel, usernameLabel, usernameField, passwordLabel, passwordField, loginButton, signUpButton);
+
+        setPanelContent(loginPanel);
+    }
+
+    private void authenticateUser(String enteredUsername, String enteredPassword) {
+        for (Parent parent : parentsList) {
+            if (parent.authenticate(enteredUsername, enteredPassword)) {
+                showMessageDialog("Successful Login!", "Login Success");
+                openChildSelectionDialog(parent);
+                return;
+            }
+        }
+        showMessageDialog("Invalid username or password.", "Authentication Error");
+    }
+
+    private void createSignUpPanel() {
+        JPanel signUpPanel = new JPanel(new GridLayout(6, 2));
+
+        JLabel newUsernameLabel = new JLabel("New Username:");
+        JLabel newPasswordLabel = new JLabel("New Password:");
+        JLabel repeatPasswordLabel = new JLabel("Repeat Password:");
+
+        newUsernameField = new JTextField(20);
+        newPasswordField = new JPasswordField(20);
+        repeatPasswordField = new JPasswordField(20);
+
+        JButton signUpConfirmButton = new JButton("Confirm");
+        JButton signUpBackButton = new JButton("Back");
+
+        signUpConfirmButton.addActionListener(e -> signUpUser());
+        signUpBackButton.addActionListener(e -> createLoginPanel());
+
+        addComponentsToPanel(signUpPanel, newUsernameLabel, newUsernameField, newPasswordLabel, newPasswordField, repeatPasswordLabel, repeatPasswordField, signUpConfirmButton, signUpBackButton);
+
+        setPanelContent(signUpPanel);
+    }
+
+    private void signUpUser() {
+        String newUsername = newUsernameField.getText();
+        char[] newPasswordChars = newPasswordField.getPassword();
+        char[] repeatPasswordChars = repeatPasswordField.getPassword();
+
+        String newPassword = new String(newPasswordChars);
+        String repeatPassword = new String(repeatPasswordChars);
+
+        if (!newPassword.equals(repeatPassword)) {
+            showMessageDialog("Passwords do not match.", "Error");
+            return;
+        }
+
+        if (newPassword.length() < MIN_PASSWORD_LENGTH || !isPasswordStrong(newPassword)) {
+            showMessageDialog("Password does not meet strength requirements. It must be at least 8 characters long and contain at least one letter and one number.", "Error");
+            return;
+        }
+
+        for (Parent existingParent : parentsList) {
+            if (existingParent.getUsername().equals(newUsername)) {
+                showMessageDialog("Username already exists. Please choose a different one.", "Error");
+                return;
+            }
+        }
+
+        Parent newParent = new Parent(newUsername, newPassword);
+        parentsList.add(newParent);
+        showMessageDialog("Sign-up successful!", "Success");
+
+        newUsernameField.setText("");
+        newPasswordField.setText("");
+        repeatPasswordField.setText("");
+
+        createLoginPanel(); // After signing up, go back to the login panel
+    }
+
+    private boolean isPasswordStrong(String password) {
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+    private void addComponentsToPanel(JPanel panel, JComponent... components) {
+        for (JComponent component : components) {
+            panel.add(component);
+        }
+    }
+
+    private void showMessageDialog(String message, String title) {
+        JOptionPane.showMessageDialog(frame, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void setPanelContent(JPanel panel) {
+        frame.setContentPane(panel);
+        frame.revalidate();
+        frame.repaint();
+        frame.setVisible(true);
+    }
+
+    private void openChildSelectionDialog(Parent parent) {
+        ChildSelectionDialog childSelectionDialog = new ChildSelectionDialog(frame, parent, null);
+        childSelectionDialog.setVisible(true);
+    }
+}

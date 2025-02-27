@@ -1,0 +1,27 @@
+
+
+public class PacketRepository {
+
+    public static void main(String[] args) {
+        HT hashTable = new HT(99);
+
+        Packet packet1 = new Packet(23456, "TCP", 77);
+        Packet packet2 = new Packet(65432, "UDP", 7777);
+
+
+        hashTable.insertpacket(packet1);
+        hashTable.insertpacket(packet2);
+
+
+        Packet result = people. searchPacket(23456);
+
+        if (result != null) {
+            System.out.println("Person record found. The name is: " + result.getProtocol());
+        } else {
+            System.out.println("The search did not find the object at hand");
+        }
+
+    }
+
+
+}

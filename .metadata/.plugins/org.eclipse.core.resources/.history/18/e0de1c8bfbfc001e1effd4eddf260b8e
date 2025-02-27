@@ -1,0 +1,42 @@
+
+public class PacketRepository {
+
+	public static void main(String[] args) {
+		HT hashTable = new HT(10);
+		
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(2304L, "UDP", 3467));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(320491L, "TCP", 8080));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(3456L, "TCP", 23821));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(42383234L, "UDP", 2024));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(20L, "UDP", -2392));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(23939181L, "TCP", 5063));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(12345678L, "UDP", 0721));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(239110L, "TCP", 420));
+		hashTable.printHash();
+		hashTable.addRecord(new Packet(2391107L, "UDP", 69));
+		hashTable.printHash();
+		
+//		// Test For Bad Data Insertion
+		//hashTable.addRecord(new Packet(-12032L, "UDP", 3834));
+		//hashTable.addRecord(new Packet(2348291L, "myProto", 3122));
+		
+		hashTable.remRecord(320491L);
+		hashTable.printHash();
+		hashTable.remRecord(23939181L);
+		hashTable.printHash();
+		hashTable.remRecord(1L);
+		Packet searchTarget = hashTable.searchRecord(3456L);
+		System.out.println("The record you were looking for has the following traits: " 
+							+ searchTarget.getSeqNum() + " " + searchTarget.getPort() + " "
+							+ searchTarget.getProtocol());
+	}
+
+}

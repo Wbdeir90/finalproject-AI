@@ -1,0 +1,26 @@
+public class Packet {
+
+    private long seqNum;
+    private String protocol;
+    private int port;
+
+
+    public Packet(long seqNum, String protocol, int port){
+        this.seqNum = seqNum;
+        this.protocol = protocol;
+        this.port = port;
+
+
+    }
+    public long getSeqNum(){
+        return this.seqNum;
+    }
+
+    public String getProtocol(){
+        return this.protocol;
+    }
+    public int getPort(){
+        return this.port;
+    }
+
+}

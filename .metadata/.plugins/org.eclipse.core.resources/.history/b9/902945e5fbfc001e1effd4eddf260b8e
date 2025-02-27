@@ -1,0 +1,56 @@
+import java.util.Arrays;
+
+public class HT {
+    private Packet[] packets;
+    private int arraySize;
+
+    public HT(int arraySize) {
+        this.arraySize = arraySize;
+        packets = new Packet[arraySize];
+    }
+
+    private int hashFunction(long seqNum) {
+        return (int) (seqNum % arraySize);
+    }
+
+    public void insertPacket(Packet packet) {
+        int index = hashFunction(packet.getSeqNum());
+        if (packets[index] == null) {
+            packets[index] = packet;
+            System.out.println("Packet inserted at index " + index);
+        } else {
+            System.out.println("Collision detected at index " + index + ". Packet not inserted.");
+        }
+    }
+
+    public Packet searchPacket(long seqNum) {
+        int index = hashFunction(seqNum);
+        if (packets[index] != null && packets[index].getSeqNum() == seqNum) {
+            return packets[index];
+        } else {
+            return null;
+        }
+    }
+
+    public void deletePacket(long seqNum) {
+        int index = hashFunction(seqNum);
+        if (packets[index] != null && packets[index].getSeqNum() == seqNum) {
+            packets[index] = null;
+            System.out.println("Packet with sequence number " + seqNum + " deleted successfully.");
+        } else {
+            System.out.println("Packet with sequence number " + seqNum + " not found.");
+        }
+    }
+
+    public void printHashTable() {
+        for (int i = 0; i < arraySize; i++) {
+            if (packets[i] == null) {
+                System.out.println(i + ": (null | null | null)");
+            } else {
+                System.out.println(i + ": (" + packets[i].getSeqNum() + " | " +
+                        packets[i].getPort() + " | " + packets[i].getProtocol() + ")");
+            }
+        }
+        System.out.println();
+    }
+}

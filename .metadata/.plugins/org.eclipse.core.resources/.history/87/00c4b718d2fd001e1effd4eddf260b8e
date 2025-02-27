@@ -1,0 +1,31 @@
+
+public class PacketRepository {
+
+  static HT packets = null;
+
+  public static void main(String[] args) {
+    packets = new HT(1000);
+
+    Packet packet1 = new Packet(192836, 22, "TCP");
+    Packet packet2 = new Packet(165374, 20, "TCP");
+    Packet packet3 = new Packet(132378, 20, "TCP");
+    Packet packet4 = new Packet(826462, 22, "TCP");
+    Packet packet5 = new Packet(534263, 18, "TCP");
+
+    packets.InsertPacket(packet1);
+    packets.InsertPacket(packet2);
+    packets.InsertPacket(packet3);
+    packets.InsertPacket(packet4);
+    packets.InsertPacket(packet5);
+    packets.DisplayPackets();
+
+    packets.RemovePacket(packet3);
+    packets.DisplayPackets();
+
+    packets.FindPacket(packet2);
+
+    Packet packet6 = packet3;
+    packets.InsertPacket(packet6);
+    packets.DisplayPackets();
+  }
+}

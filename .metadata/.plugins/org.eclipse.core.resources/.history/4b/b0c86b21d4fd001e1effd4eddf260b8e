@@ -1,0 +1,45 @@
+public class Packet {
+    private long sequenceNumber;
+    private String protocol;
+    private int port;
+
+    public Packet(long sequenceNumber, String protocol, int port) {
+        this.sequenceNumber = sequenceNumber;
+        this.protocol = protocol;
+        this.port = port;
+    }
+
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(long sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    // To make the output easier to read and comprehend.
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "sequenceNumber=" + sequenceNumber +
+                ", protocol='" + protocol + '\'' +
+                ", port=" + port +
+                '}';
+    }
+}

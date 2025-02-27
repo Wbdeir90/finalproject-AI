@@ -1,0 +1,101 @@
+
+
+public class HT {
+
+private packetRepository[] HTT;
+
+private int arraySize;
+boolean foundHome;
+int index;
+
+
+public HT(int arraySize) {
+	this.arraySize = arraySize;
+	HTT = new packetRepository[arraySize];
+}
+
+private int hashFunction(long sequence) {
+	return (int)(sequence % arraySize);
+}
+
+
+public void insertNewRecord(packetRepository newRecord) {
+	packetRepository recordAtHand = null;	
+	
+   long sequence = newRecord.getKey(); 
+	
+   int index = this.hashFunction(sequence);
+   
+   int endPoint = index;
+   
+   System.out.println("insertNewRecord - inserting PersonRecord object at index: " + index);
+   
+   boolean foundHome = false;
+   
+   do {
+	   if (HTT[index] == null) {
+		   HTT[index] = newRecord;
+		   foundHome = true;
+	   } else {
+		   recordAtHand = HTT[index];
+		   if (!recordAtHand.isValid()) {
+			   HTT[index] = newRecord;
+			   foundHome = true;
+		   } else {
+			   // search for a home on the right;
+			   index = (++index) % arraySize;
+		   }
+	   }
+   } while ((foundHome == false) && (index != endPoint));
+   
+   if (foundHome == false) {
+	   System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+   }
+}	
+
+//public void deleteRecord(packetRepository newRecord) {
+	
+	
+//}
+public packetRepository searchRecord(long searchKey) {
+	packetRepository recordAtHand = null;
+	 
+	 int index = this.hashFunction(searchKey);
+	 
+	 int endPoint = index;
+	 
+	 do {
+		 recordAtHand = HTT[index];
+		 
+		 if (recordAtHand == null) return recordAtHand;
+	 
+	     if (searchKey == recordAtHand.getKey()) {
+		     return recordAtHand;
+	     } else {
+	    	 index = (++index) % arraySize;
+	     }
+	 } while (index != endPoint); 
+	 
+     System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+	 
+     return null;
+}
+
+public void deleteRecord(packetRepository newRecord) {
+	 long sequence = newRecord.getKey(); 
+		
+	   int index = this.hashFunction(sequence);
+	   
+	   HTT[index] =null;
+	   newRecord = null;
+	
+
+	   
+	   
+	}
+
+		
+}
+
+
+

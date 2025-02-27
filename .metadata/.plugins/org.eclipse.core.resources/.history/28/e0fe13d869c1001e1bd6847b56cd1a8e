@@ -1,0 +1,53 @@
+package library;
+
+public class NIDS {
+    private static IntNode head;
+
+    public static IntNode removeDuplicate(int target) {
+        if (head == null)
+            return head;
+
+        System.out.println("Running removeDuplicate() on target " + target + "\n");
+
+        IntNode previous = null;
+
+        if (target == head.getSequenceNumber(true)) {
+            head = head.getLink();
+        } else
+            previous = head.findPrevious(head, target);
+
+        if (previous != null)
+            previous.removeNodeAfter();
+
+        return head;
+    }
+
+    public static IntNode addNodeInOrder(int target, int data) {
+        IntNode previous = null;
+
+        System.out.println("Running addNodeInOrder() on target " + target + " and data " + data + "\n");
+
+        if (head == null) {
+            head = new IntNode(target, data, head);
+            return head;
+        }
+
+        if (target < head.getSequenceNumber(true))
+            head = new IntNode(target, data, head);
+        else
+            previous = head.locatePredecessor(head, target);
+
+        if (previous != null)
+            previous.addNodeAfter(data, target);
+
+        return head;
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        NIDS.addNodeInOrder(13, 308329763);
+        IntNode.displayNodeData(head);
+        NIDS.removeDuplicate(13);
+        IntNode.displayNodeData(head);
+    }
+}

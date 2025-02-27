@@ -1,0 +1,74 @@
+
+
+public class packetRepository {
+
+	public static void main(String[] args) {
+		System.out.println("This is code that creates and works with a hashtable that stores packets");
+		
+		HT packets = new HT(429);
+		
+		Packet TCP1 = new Packet(1343153L, "TPC", 6);
+		
+		Packet TCP2 = new Packet(123L, "TPC", 7);
+		
+		Packet TCP3 = new Packet(1234567890L, "TPC", 8);
+		
+		packets.insertNewPacket(TCP1);
+		packets.insertNewPacket(TCP2);
+		packets.insertNewPacket(TCP3);
+		
+		
+		Packet UDP1 = new Packet(76123098923L, "UDP", 6);
+		
+		Packet UDP2 = new Packet(121231412L, "UDP", 7);
+		
+		Packet UDP3 = new Packet(111111111111111L, "UDP", 8);
+		
+		packets.insertNewPacket(UDP1);
+		packets.insertNewPacket(UDP2);
+		packets.insertNewPacket(UDP3);
+		
+		//search Packet Function
+		Packet result = packets.searchPacket(1343153);
+		
+		if (result != null) {
+			System.out.println("Packet found. The name is: " + result.getSequence()); 
+		} else {
+			System.out.println("The search did not find the object at hand");
+		}
+	
+		Packet result2 = packets.searchPacket(121231412);
+	
+		if (result2 != null) {
+		System.out.println("Packet found. The name is: " + result2.getSequence()); 
+		} else {
+		System.out.println("The search did not find the object at hand");
+		}
+		
+		Packet result3 = packets.searchPacket(121);
+		
+		if (result3 != null) {
+		System.out.println("Packet found. The name is: " + result3.getSequence()); 
+		} else {
+		System.out.println("The search did not find the object at hand");
+		}
+		
+		
+		//delete packet function
+		
+		packets.deletePacket(123);
+		
+		
+		//now search for index 123
+		
+		Packet result4 = packets.searchPacket(123);
+		
+		if (result4 != null) {
+		System.out.println("Packet found. The name is: " + result4.getSequence()); 
+		} else {
+		System.out.println("The search did not find the object at hand");
+		}
+		
+}
+
+}

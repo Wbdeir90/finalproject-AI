@@ -1,0 +1,38 @@
+
+
+public class Packet {
+    int sequenceNumber;
+    String protocol;
+    int portNumber;
+
+    public Packet(int sequenceNumber, String protocol, int portNumber){
+        this.sequenceNumber = sequenceNumber;
+        this.protocol = protocol;
+        this.portNumber = portNumber;
+    }
+
+    public int getSequenceNumber(){
+
+        return sequenceNumber;
+    }
+
+    public String getProtocol(){
+
+        return protocol;
+    }
+
+    public int getPortNumber(){
+
+        return portNumber;
+    }
+
+    public void setProtocol(String protocol) {
+
+        this.protocol = protocol;
+    }
+
+    public void setPortNumber(int portNumber) {
+
+        this.portNumber = portNumber;
+    }
+}

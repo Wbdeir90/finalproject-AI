@@ -1,0 +1,50 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class TaskSelectionFrame extends JFrame {
+    private TaskAssignmentDialog taskAssignmentDialog;
+    private Parent parent;
+
+    public TaskSelectionFrame(TaskAssignmentDialog taskAssignmentDialog, Parent parent) {
+        this.taskAssignmentDialog = taskAssignmentDialog;
+        this.parent = parent;
+
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        setTitle("Task Selection");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+
+        JButton addChildButton = new JButton("Add Child");
+        addChildButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openChildSelectionDialog();
+            }
+        });
+        panel.add(addChildButton);
+
+        JButton doneButton = new JButton("Done");
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the task selection frame
+            }
+        });
+
+        panel.add(doneButton);
+        getContentPane().add(panel);
+    }
+
+    private void openChildSelectionDialog() {
+        ChildSelectionDialog childSelectionDialog = new ChildSelectionDialog(this, parent, taskAssignmentDialog);
+        childSelectionDialog.setVisible(true);
+    }
+}

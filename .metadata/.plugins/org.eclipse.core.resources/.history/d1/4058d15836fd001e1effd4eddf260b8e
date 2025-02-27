@@ -1,0 +1,45 @@
+
+public class Packet {
+
+	
+	
+	private long sequenceNumber;
+	
+	private String protocol;
+	
+	private int port;
+	
+	private boolean validPacket;
+	
+	//packet constructor
+	
+	public Packet(long sequenceNumber, String protocol, int port) {
+		
+		this.sequenceNumber = sequenceNumber;
+		this.protocol = protocol;
+		this.port = port;
+		validPacket = true;
+	}
+	
+	//getter for sequence number
+	
+	public long getSequenceNumber() {
+		
+		return this.sequenceNumber;
+		
+	}
+	
+	//getter for packet validity
+	
+	public boolean isValid() {
+		
+		return this.validPacket;
+		
+	}
+	
+	//setter for packet validity
+	
+	public void setValidity(boolean valid) {
+		this.validPacket = valid;
+	}
+}

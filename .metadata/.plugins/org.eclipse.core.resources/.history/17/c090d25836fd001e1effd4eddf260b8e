@@ -1,0 +1,39 @@
+
+
+public class packetRepository {
+
+	public static void main(String[] args) {
+
+		System.out.println("This is code that creates & works with a hash table.\n");
+		HT networkP = new HT(701);
+		Packet One = new Packet(5865882384L, "TCP", 5);
+		Packet Two = new Packet(5865882385L, "UDP", 7);
+		networkP.insertNewRecord(One);
+		networkP.insertNewRecord(Two);
+		Packet result1 = networkP.searchRecord(5865882384L);
+		if (result1 != null){
+			System.out.println("Sequence Number located in Network Record: " + result1.getKey());
+			System.out.println("The Protocol is: " + result1.getProtocol() + "\nThe Port Field is: " + result1.getPort() + "\n");
+		}else {
+			System.out.println("The search did not find a network\n");
+		} 
+		
+		Packet result2 = networkP.searchRecord(5865882385L);
+		if (result2 != null){
+			System.out.println("Sequence Number located in Network Record: " + result2.getKey());
+			System.out.println("The Protocol is: " + result2.getProtocol() + "\nThe Port Field is: " + result2.getPort() + "\n");
+		}else {
+			System.out.println("The search did not find a network");
+		}
+		
+		networkP.deletePacket(5865882385L);
+		Packet result3 = networkP.searchRecord(5865882385L);
+		if (result3 != null){
+			System.out.println("Sequence Number located in Network Record: " + result3.getKey());
+			System.out.println("The Protocol is: " + result3.getProtocol() + "\nThe Port Field is: " + result3.getPort() + "\n");
+		}else {
+			System.out.println("Sequence Number located in Network Record");
+		}
+	}
+
+}

@@ -1,0 +1,36 @@
+
+public class Packet {
+	
+	private long seqNumber;
+	private String protocol;
+	private int port;
+	private boolean validPacket;
+	
+	public Packet(long seqNumber, String protocol, int port) {
+		if ((protocol == "UDP" || protocol == "TCP") && (seqNumber >= 0L && seqNumber <= 4294967295L)) {
+			this.seqNumber = seqNumber;
+			this.protocol = protocol;
+			this.port = Math.abs(port);
+			validPacket = true;
+		}
+		else {
+			System.out.println("Invalid Packet: protocol must be UDP or TCP; Sequence Number must be between 0 and 4294967295");
+		}
+	}
+	
+	public long getSeqNum() {
+		return this.seqNumber;
+	}
+	
+	public String getProtocol() {
+		return this.protocol;
+	}
+	
+	public int getPort() {
+		return this.port;
+	}
+	
+	public boolean isValid() {
+		return validPacket;
+	}
+}

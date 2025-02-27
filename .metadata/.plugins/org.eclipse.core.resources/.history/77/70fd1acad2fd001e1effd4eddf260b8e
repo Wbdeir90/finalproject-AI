@@ -1,0 +1,34 @@
+
+public class packetRepository {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		
+		HT hashTable = new HT(10000);
+		
+		Packet packet1 = new Packet(555555555, "UDP", 9999);
+		
+		hashTable.insert(packet1);
+		
+		
+		Packet existingPacket = hashTable.search(packet1.getSequenceNum());
+		
+		if (existingPacket == null) {
+			
+			System.out.println("No packet");
+			
+		} else {
+			
+			System.out.println("Packet exist" +packet1);
+		}
+		
+		
+		long deletesequenceNum = 555555555; 
+		hashTable.delete(deletesequenceNum);
+		
+	
+
+	}
+
+}

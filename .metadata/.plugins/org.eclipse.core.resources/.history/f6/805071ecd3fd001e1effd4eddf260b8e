@@ -1,0 +1,45 @@
+public class Packet {
+    
+    private long seq_Number;
+    private String protocol_Feild;
+    private int port_Feild;
+    private boolean packet_Entered;
+
+    public Packet(long seq_Number, String protocal_Feild, int port_Feild){
+        
+        this.seq_Number = seq_Number;
+        this.protocol_Feild = protocal_Feild;
+        this.port_Feild = port_Feild;
+        
+        packet_Entered = true;
+    }
+    
+    public long get_Packet(){
+        return this.seq_Number;
+    }
+
+
+    public boolean Entered(){
+        return packet_Entered;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

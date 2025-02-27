@@ -1,0 +1,65 @@
+// Represents a dialog for assigning tasks to a child
+class TaskAssignmentDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+    private Child child;
+    private JTextField taskNameField;
+    private JComboBox<String> ageGroupComboBox;
+    private JTextArea taskListTextArea;
+    private Map<String, List<String>> tasksByAge;
+    private Map<String, Map<String, Boolean>> taskStatusByAge;
+
+    public TaskAssignmentDialog(JFrame parentFrame, Child child) {
+        super(parentFrame, "Assign Tasks to Child", true);
+        this.child = child;
+        taskNameField = new JTextField(20);
+        tasksByAge = createTasksByAgeMap();
+        taskStatusByAge = createTaskStatusByAgeMap();
+
+        ageGroupComboBox = new JComboBox<>(tasksByAge.keySet().toArray(new String[0]));
+
+        JButton assignButton = new JButton("Assign Task");
+        taskListTextArea = new JTextArea(5, 20);
+        taskListTextArea.setEditable(false);
+
+        ageGroupComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTaskList();
+            }
+        });
+
+        assignButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedAgeGroup = (String) ageGroupComboBox.getSelectedItem();
+                Map<String, Boolean> taskStatus = taskStatusByAge.get(selectedAgeGroup);
+
+                for (String task : tasksByAge.get(selectedAgeGroup)) {
+                    if (!taskStatus.containsKey(task)) {
+                        taskStatus.put(task, false);
+                    }
+                }
+                TaskSelectionDialog selectionDialog = new TaskSelectionDialog(parentFrame, tasksByAge.get(selectedAgeGroup), taskStatus);
+                selectionDialog.setVisible(true);
+
+                taskStatusByAge.put(selectedAgeGroup, selectionDialog.getTaskStatus());
+
+                updateTaskList();
+                checkIfChildIsDone();
+            }
+        });
+
+        JPanel panel = new JPanel(new GridLayout(4, 1));
+        panel.add(new JLabel("Choose Child's Age Range:"));
+        panel.add(ageGroupComboBox);
+        panel.add(assignButton);
+        panel.add(new JScrollPane(taskListTextArea));
+        getContentPane().add(panel);
+        pack();
+        setLocationRelativeTo(null);
+        updateTaskList();
+    }
+
+    // Other methods remain unchanged...
+
+}

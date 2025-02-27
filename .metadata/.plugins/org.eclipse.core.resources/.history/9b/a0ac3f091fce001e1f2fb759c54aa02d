@@ -1,0 +1,103 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TaskAssignmentDialog extends JDialog {
+    private final JComboBox<String> childComboBox;
+    private final JComboBox<String> ageGroupComboBox;
+    private final Parent parent;
+    private final List<String> tasksForAgeGroup;
+    private final Map<String, Boolean> taskCompletionStatus;
+
+    public TaskAssignmentDialog(JFrame parentFrame, Parent parent, Child child, String selectedAge, List<String> tasksForAgeGroup) {
+        super(parentFrame, "Task Assignment", true);
+        this.parent = parent;
+        this.tasksForAgeGroup = tasksForAgeGroup;
+        taskCompletionStatus = new HashMap<>();
+        initializeTaskCompletionStatus(); // Initialize task completion status
+        createTaskCheckboxes(); // Create checkboxes for tasks
+    }
+
+    private void initializeTaskCompletionStatus() {
+        for (String task : tasksForAgeGroup) {
+            taskCompletionStatus.put(task, false); // Initialize all tasks as incomplete
+        }
+    }
+
+    private void createTaskCheckboxes() {
+        JPanel taskPanel = new JPanel(new GridLayout(0, 1));
+        for (String task : tasksForAgeGroup) {
+            JCheckBox taskCheckbox = new JCheckBox(task);
+            taskCheckbox.addActionListener(e -> {
+                taskCompletionStatus.put(task, taskCheckbox.isSelected());
+                checkAllTasksCompleted();
+            });
+            taskPanel.add(taskCheckbox);
+        }
+        getContentPane().add(taskPanel);
+    }
+
+    private void checkAllTasksCompleted() {
+        boolean allTasksCompleted = taskCompletionStatus.values().stream().allMatch(Boolean::booleanValue);
+        if (allTasksCompleted) {
+            JOptionPane.showMessageDialog(this, "All tasks completed!", "Congratulations", JOptionPane.INFORMATION_MESSAGE);
+            // Show button to open prize selection window
+            JButton prizeButton = new JButton("Choose Prize");
+            prizeButton.addActionListener(e -> openPrizeSelectionWindow());
+            getContentPane().add(prizeButton);
+            pack();
+        }
+    }
+
+    private void openPrizeSelectionWindow() {
+        PrizeSelectionDialog prizeSelectionDialog = new PrizeSelectionDialog((JFrame) getParent());
+        prizeSelectionDialog.setVisible(true);
+    }
+}
+
+    private void updateChildComboBox() {
+        childComboBox.removeAllItems();
+        for (String childName : parent.getChildNames()) {
+            childComboBox.addItem(childName);
+        }
+    }
+
+    private Map<String, List<String>> createTasksByAgeMap() {
+        Map<String, List<String>> tasksByAge = new HashMap<>();
+
+        tasksByAge.put("3-6", List.of(
+                "Make their bed",
+                "Empty wastebaskets",
+                "Bring in mail or newspaper",
+                "Clear table",
+                "Pull weeds, if you have a garden",
+                "Water flowers"
+        ));
+
+        tasksByAge.put("7-9", List.of(
+                "Load dishwasher",
+                "Put away groceries",
+                "Vacuum",
+                "Help make dinner",
+                "Make own snacks",
+                "Wash table after meals",
+                "Put away own laundry"
+        ));
+
+        tasksByAge.put("10-12", List.of(
+                "Unload dishwasher",
+                "Fold laundry",
+                "Clean bathroom",
+                "Wash windows",
+                "Cook simple meal with supervision",
+                "Iron clothes",
+                "Do laundry"
+        ));
+
+        return tasksByAge;
+    }
+}

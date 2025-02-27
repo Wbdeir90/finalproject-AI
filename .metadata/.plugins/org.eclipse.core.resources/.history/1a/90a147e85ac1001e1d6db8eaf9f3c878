@@ -1,0 +1,98 @@
+public class IntrusionDetectorClass {
+
+    static IntNode head = null;
+
+    public static void main(String[] args) {
+
+        System.out.println("Prj1 is running.\n");
+
+        head = new IntNode(13, 230185386, head);
+        head.displayNodeData(head);
+
+        removeDuplicate(13);
+        if (head != null)
+            head.displayNodeData(head);
+        else {
+            System.out.print("The linked list is empty.\n");
+            System.out.print(" \n");
+        }
+
+        addNodeInOrder(13, 308329763);
+        head.displayNodeData(head);
+
+        removeDuplicate(14);
+        head.displayNodeData(head);
+        addNodeInOrder(14, 248041794);
+        head.displayNodeData(head);
+
+        removeDuplicate(14);
+        head.displayNodeData(head);
+        addNodeInOrder(14, 295106305);
+        head.displayNodeData(head);
+
+        removeDuplicate(15);
+        head.displayNodeData(head);
+        addNodeInOrder(15, 325615905);
+        head.displayNodeData(head);
+
+        removeDuplicate(16);
+        head.displayNodeData(head);
+        addNodeInOrder(16, 652976466);
+        head.displayNodeData(head);
+
+        removeDuplicate(17);
+        head.displayNodeData(head);
+        addNodeInOrder(17, 847897267);
+        head.displayNodeData(head);
+
+        removeDuplicate(17);
+        head.displayNodeData(head);
+        addNodeInOrder(17, 927847798);
+        head.displayNodeData(head);
+
+        System.out.println("End of run.\n");
+    }
+
+    public static void addNodeInOrder(int target, int data) {
+        if (head == null || head.getSequenceNumber(false) > target) {
+            // Insert at the beginning
+            head = new IntNode(target, data, head);
+        } else {
+            IntNode previous = head;
+            IntNode current = head.getLink();
+
+            while (current != null && current.getSequenceNumber(false) < target) {
+                previous = current;
+                current = current.getLink();
+            }
+
+            if (current == null || current.getSequenceNumber(false) > target) {
+                // Insert in the middle or at the end
+                previous.addNodeAfter(data, target);
+            } else {
+                // Duplicate found, update data
+                current.addNodeAfter(data, target);
+            }
+        }
+    }
+
+    public static void removeDuplicate(int target) {
+        IntNode previous = null;
+        IntNode current = head;
+
+        while (current != null && current.getSequenceNumber(false) != target) {
+            previous = current;
+            current = current.getLink();
+        }
+
+        if (current != null) {
+            // Remove the node
+            if (previous == null) {
+                // Node is at the head
+                head = current.getLink();
+            } else {
+                previous.removeNodeAfter();
+            }
+        }
+    }
+}

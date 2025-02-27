@@ -1,0 +1,31 @@
+public class PacketRepository {
+    public static void main(String[] args) {
+        HT hashTable = new HT(100); // Initialize hash table with size 100
+
+        Packet packet1 = new Packet(23456, "TCP", 77);
+        Packet packet2 = new Packet(65432, "UDP", 7777);
+
+        // Insert packets into hash table
+        hashTable.insertPacket(packet1);
+        hashTable.insertPacket(packet2);
+
+        // Search for a packet
+        Packet result = hashTable.searchPacket(23456);
+        if (result != null) {
+            System.out.println("Packet found. Protocol: " + result.getProtocol() + ", Port: " + result.getPort());
+        } else {
+            System.out.println("Packet not found.");
+        }
+
+        // Delete a packet
+        hashTable.deletePacket(23456);
+
+        // Search again after deletion
+        result = hashTable.searchPacket(23456);
+        if (result != null) {
+            System.out.println("Packet found. Protocol: " + result.getProtocol() + ", Port: " + result.getPort());
+        } else {
+            System.out.println("Packet not found.");
+        }
+    }
+}

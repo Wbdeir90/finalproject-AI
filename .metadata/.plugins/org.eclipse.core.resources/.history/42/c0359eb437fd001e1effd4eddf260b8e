@@ -1,0 +1,71 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Marteno Romaya                                                                              ///
+// Project 5 Hash Tables                                                                      ///
+// The work done in class in addition to the lab helped greatly to get the code needed.        ///
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+public class HT {
+    private Packet[] HT;
+    private int arrayLength;
+
+    public HT(int arraylength) {
+        this.arrayLength = arraylength; 
+        HT = new Packet[arraylength];
+    }
+
+//HashFunction
+    private int hashFunction(long key) {
+        return (int)(key % this.arrayLength);
+    }
+    
+//insertNewPacket
+    public void insertPacket(Packet newInformation) {
+        int index = hashFunction(newInformation.getKey());
+
+        while (HT[index] != null) {
+            index = (index + 1) % arrayLength; 
+        }
+
+        HT[index] = newInformation;
+    }
+    
+//searchPacket
+    public Packet searchingPacket(long searchKey) {
+        int index = hashFunction(searchKey);
+        int introPoints = index;
+
+        do {
+            if (HT[index] != null && HT[index].getKey() == searchKey) {
+                return HT[index];
+            }
+            index = (index + 1) % arrayLength;
+        } while (index != introPoints && HT[index] != null);
+
+        return null;
+    }
+    
+//deletePacket
+    public void deletePacket(long searchKey) {
+        int index = hashFunction(searchKey);
+        int deletePoint = index;
+
+        do {
+            if (HT[index] != null && HT[index].getKey() == searchKey) {
+                HT[index] = null;
+                System.out.println("Record with key " + searchKey + " deleted successfully.");
+                System.out.println("--------------------------------------------------------");
+                System.out.println();
+
+                return;
+            }
+            index = (index + 1) % arrayLength;
+        } while (index != deletePoint && HT[index] != null);
+
+        System.out.println("Record with key " + searchKey + " not found.");
+        System.out.println("--------------------------------------------------------");
+        System.out.println();
+
+    }
+} 
+//////////////////////////End of Project 5

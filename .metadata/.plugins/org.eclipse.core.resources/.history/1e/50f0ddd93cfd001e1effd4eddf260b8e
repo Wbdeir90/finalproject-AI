@@ -1,0 +1,88 @@
+
+
+public class HT {
+    private Packet[] HT;
+    private int arraySize;
+
+    public HT(int arraySize) {
+        this.arraySize = arraySize;
+        HT = new Packet[arraySize];
+    }
+
+    private int hashFunction(long key) {
+        return (int)(key % arraySize);
+    }
+
+    public void insertPacket(Packet newPacket) {
+        Packet packetAtHand = null;
+
+        long key = newPacket.getSequenceNumber();
+
+        int index = this.hashFunction(key);
+
+        int endPoint = index;
+
+        boolean foundHome = false;
+
+        do {
+            if (HT[index] == null) {
+                HT[index] = newPacket;
+                foundHome = true;
+            } else {
+                packetAtHand = HT[index];
+                if (packetAtHand.getSequenceNumber() == newPacket.getSequenceNumber()) {
+                    System.out.println("Duplicate sequence number. Packet not inserted.");
+                    return;
+                }
+                index = (++index) % arraySize;
+            }
+        } while (!foundHome && index != endPoint);
+
+        if (!foundHome) {
+            System.out.println("The hashtable is full, and therefore the new packet was not inserted.");
+        }
+    }
+
+    public Packet searchPacket(long searchKey) {
+        int index = this.hashFunction(searchKey);
+
+        int endPoint = index;
+
+        do {
+            Packet packetAtHand = HT[index];
+
+            if (packetAtHand == null) return null;
+
+            if (searchKey == packetAtHand.getSequenceNumber()) {
+                return packetAtHand;
+            } else {
+                index = (++index) % arraySize;
+            }
+        } while (index != endPoint);
+
+        System.out.println("The packet with sequence number " + searchKey + " was not found.");
+        return null;
+    }
+
+    public void deletePacket(long searchKey) {
+        int index = this.hashFunction(searchKey);
+
+        int endPoint = index;
+
+        do {
+            Packet packetAtHand = HT[index];
+
+            if (packetAtHand == null) return;
+
+            if (searchKey == packetAtHand.getSequenceNumber()) {
+                HT[index] = null;
+                System.out.println("Packet with sequence number " + searchKey + " deleted successfully.");
+                return;
+            } else {
+                index = (++index) % arraySize;
+            }
+        } while (index != endPoint);
+
+        System.out.println("The packet with sequence number " + searchKey + " was not found.");
+    }
+}

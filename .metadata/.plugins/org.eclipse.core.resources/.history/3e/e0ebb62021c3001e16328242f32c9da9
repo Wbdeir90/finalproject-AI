@@ -1,0 +1,28 @@
+// Represents a task to be completed by a child
+class Task {
+    private String name;
+    private boolean completed;
+    private Child assignedTo;
+
+    public Task(String name, Child assignedTo) {
+        this.name = name;
+        this.assignedTo = assignedTo;
+        this.completed = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void markAsCompleted() {
+        completed = true;
+    }
+
+    public Child getAssignedTo() {
+        return assignedTo;
+    }
+}

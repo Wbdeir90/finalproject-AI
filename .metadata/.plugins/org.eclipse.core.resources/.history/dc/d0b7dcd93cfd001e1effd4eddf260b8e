@@ -1,0 +1,22 @@
+
+public class packetRepository {
+    public static void main(String[] args) {
+        HT packets = new HT(701);
+
+        Packet packet1 = new Packet(1234567890L, "TCP", 80);
+        Packet packet2 = new Packet(9876543210L, "UDP", 443);
+
+        packets.insertPacket(packet1);
+        packets.insertPacket(packet2);
+
+        Packet result = packets.searchPacket(1234567890L);
+
+        if (result != null) {
+            System.out.println("Packet found. Sequence number: " + result.getSequenceNumber() + ", Protocol: " + result.getProtocol() + ", Port: " + result.getPort());
+        } else {
+            System.out.println("The search did not find the packet at hand.");
+        }
+
+        packets.deletePacket(1234567890L);
+    }
+}

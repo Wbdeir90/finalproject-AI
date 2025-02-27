@@ -1,0 +1,32 @@
+
+public class Packet {
+	
+	private long sequenceNum;
+	private String protocolField;
+	private int portField; 
+	
+	
+	public Packet(long seqeunceNum, String protocolField, int portField) {
+		this.sequenceNum = sequenceNum;
+		this.protocolField = protocolField; 
+		this.portField = portField; 
+		
+		
+	}
+	
+	
+	public long getSequenceNum() {
+		return sequenceNum; 
+	}
+	
+	public String getprotocolField() {
+        return protocolField;
+        
+    }
+
+    public int getportField() {
+        return portField;
+        
+    }
+
+}

@@ -1,0 +1,63 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ChildSelectionDialog extends JDialog {
+    private final TaskAssignmentDialog taskAssignmentDialog;
+    private final Parent parent;
+
+    public ChildSelectionDialog(TaskSelectionFrame parentFrame, Parent parent, TaskAssignmentDialog taskAssignmentDialog) {
+        super(parentFrame, "Add Child", true);
+        this.parent = parent;
+        this.taskAssignmentDialog = taskAssignmentDialog;
+
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+
+        // Display buttons for each child
+        for (Child child : parent.getChildren()) {
+            JButton childButton = new JButton(child.getName());
+            childButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openAgeSelectionDialog(child.getName());
+                }
+            });
+            panel.add(childButton);
+        }
+
+        JButton addButton = new JButton("Add New Child");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openChildCreationDialog();
+            }
+        });
+        panel.add(addButton);
+
+        setContentPane(panel);
+        pack();
+        setLocationRelativeTo(parentFrame);
+    }
+
+    private void openAgeSelectionDialog(String childName) {
+        String[] ageGroups = {"3-6", "7-9", "10-12"};
+        JComboBox<String> ageComboBox = new JComboBox<>(ageGroups);
+
+        int result = JOptionPane.showConfirmDialog(this, ageComboBox, "Select Age for " + childName, JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String selectedAge = (String) ageComboBox.getSelectedItem();
+            openTaskAssignmentDialog(childName, selectedAge);
+        }
+    }
+
+    private void openTaskAssignmentDialog(String childName, String selectedAge) {
+        Child child = parent.getChildByName(childName);
+        TaskAssignmentDialog dialog = new TaskAssignmentDialog((JFrame) getParent(), parent, child, selectedAge);
+        dialog.setVisible(true);
+    }
+
+    private void openChildCreationDialog() {
+        // Implement logic to open child creation dialog
+    }
+}

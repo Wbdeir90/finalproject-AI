@@ -1,0 +1,33 @@
+
+
+import java.util.HashMap;
+
+public class RecordKeepingHT {
+    private static final int TABLE_SIZE = 1000; // Adjust as needed
+    private HashMap<Long, Packet> packetMap;
+
+    public RecordKeepingHT() {
+        packetMap = new HashMap<>(TABLE_SIZE);
+    }
+
+    // Hash function
+    private int hashFunction(long sequenceNumber) {
+        // Simple modulo operation
+        return (int) (sequenceNumber % TABLE_SIZE);
+    }
+
+    // Insert a packet into the hash table
+    public void insert(Packet packet) {
+        packetMap.put(packet.getSequenceNumber(), packet);
+    }
+
+    // Delete a packet from the hash table
+    public void delete(long sequenceNumber) {
+        packetMap.remove(sequenceNumber);
+    }
+
+    // Search for a packet in the hash table
+    public Packet search(long sequenceNumber) {
+        return packetMap.get(sequenceNumber);
+    }
+}

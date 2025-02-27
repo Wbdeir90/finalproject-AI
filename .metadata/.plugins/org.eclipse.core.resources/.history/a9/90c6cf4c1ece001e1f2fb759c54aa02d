@@ -1,0 +1,114 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TaskAssignmentDialog extends JDialog {
+    private final JComboBox<String> childComboBox;
+    private final JComboBox<String> ageGroupComboBox;
+    private final Parent parent;
+    private final Map<String, List<String>> tasksByAge;
+
+    public TaskAssignmentDialog(JFrame parentFrame, Parent parent) {
+        super(parentFrame, "Assign Tasks to Child", true);
+        this.parent = parent;
+        tasksByAge = createTasksByAgeMap();
+
+        JPanel panel = new JPanel(new GridLayout(6, 2));
+
+        JLabel childLabel = new JLabel("Select Child:");
+        childComboBox = new JComboBox<>();
+        updateChildComboBox();
+
+        JLabel ageGroupLabel = new JLabel("Select Age Group:");
+        ageGroupComboBox = new JComboBox<>(tasksByAge.keySet().toArray(new String[0]));
+
+        JLabel taskLabel = new JLabel("Select Task:");
+
+        JButton assignButton = new JButton("Assign Task");
+        assignButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openTaskAssignmentWindow();
+            }
+        });
+
+        panel.add(childLabel);
+        panel.add(childComboBox);
+        panel.add(ageGroupLabel);
+        panel.add(ageGroupComboBox);
+        panel.add(taskLabel);
+        panel.add(new JLabel());
+        panel.add(new JLabel());
+        panel.add(assignButton);
+
+        getContentPane().add(panel);
+        pack();
+        setLocationRelativeTo(parentFrame);
+    }
+
+    private void openTaskAssignmentWindow() {
+        String selectedChild = (String) childComboBox.getSelectedItem();
+        String selectedAgeGroup = (String) ageGroupComboBox.getSelectedItem();
+
+        if (selectedChild == null || selectedAgeGroup == null) {
+            JOptionPane.showMessageDialog(this, "Please select a child and an age group.", "Assignment Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        List<String> tasksForAgeGroup = tasksByAge.get(selectedAgeGroup);
+        if (tasksForAgeGroup == null || tasksForAgeGroup.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No tasks available for the selected age group.", "Assignment Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Open a new window for task assignment
+        TaskAssignmentWindow taskAssignmentWindow = new TaskAssignmentWindow(selectedChild, selectedAgeGroup, tasksForAgeGroup);
+        taskAssignmentWindow.setVisible(true);
+    }
+
+    private Map<String, List<String>> createTasksByAgeMap() {
+        Map<String, List<String>> tasksByAge = new HashMap<>();
+
+        tasksByAge.put("3-6", List.of(
+                "Make their bed",
+                "Empty wastebaskets",
+                "Bring in mail or newspaper",
+                "Clear table",
+                "Pull weeds, if you have a garden",
+                "Water flowers"
+        ));
+
+        tasksByAge.put("7-9", List.of(
+                "Load dishwasher",
+                "Put away groceries",
+                "Vacuum",
+                "Help make dinner",
+                "Make own snacks",
+                "Wash table after meals",
+                "Put away own laundry"
+        ));
+
+        tasksByAge.put("10-12", List.of(
+                "Unload dishwasher",
+                "Fold laundry",
+                "Clean bathroom",
+                "Wash windows",
+                "Cook simple meal with supervision",
+                "Iron clothes",
+                "Do laundry"
+        ));
+
+        return tasksByAge;
+    }
+
+    private void updateChildComboBox() {
+        childComboBox.removeAllItems();
+        for (String childName : parent.getChildNames()) {
+            childComboBox.addItem(childName);
+        }
+    }
+}

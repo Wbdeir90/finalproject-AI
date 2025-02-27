@@ -1,0 +1,31 @@
+public class HT {
+    private Packet[] packetArray;
+
+    public HT(int size) {
+        packetArray = new Packet[size];
+    }
+
+    // Custom hash function
+    private int hashFunction(long sequenceNumber) {
+        // Simple modulo hashing
+        return (int) (sequenceNumber % packetArray.length);
+    }
+
+    // Method to insert a Packet into the hash table
+    public void insert(Packet packet) {
+        int index = hashFunction(packet.getSequenceNumber());
+        packetArray[index] = packet;
+    }
+
+    // Method to search for a Packet in the hash table
+    public Packet search(long sequenceNumber) {
+        int index = hashFunction(sequenceNumber);
+        return packetArray[index];
+    }
+
+    // Method to delete a Packet from the hash table
+    public void delete(long sequenceNumber) {
+        int index = hashFunction(sequenceNumber);
+        packetArray[index] = null;
+    }
+}

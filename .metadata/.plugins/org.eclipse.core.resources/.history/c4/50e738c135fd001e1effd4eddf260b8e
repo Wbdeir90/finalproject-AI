@@ -1,0 +1,44 @@
+
+
+public class PacketRepository {
+
+	public static void main(String[] args) {
+		
+		//welcome message to human
+		System.out.println("Hello, this is a program that deals with hash tables regarding network packets.");
+		System.out.println("-------------------------------------------------------------------------------\n");
+		
+		//creation of hash table
+		HT network = new HT(50);
+		
+		//creation of some network packets
+		Packet pack1 = new Packet(43590,"UDP",272);
+		Packet pack2 = new Packet(379104,"TCP",32); 
+		Packet pack3 = new Packet(25104987,"UDP",484);
+		Packet pack4 = new Packet(204,"UDP",120); 
+		
+		//inserting packets into hash table
+		network.insertNewPacket(pack1);
+		network.insertNewPacket(pack2);
+		network.insertNewPacket(pack3);
+		network.insertNewPacket(pack4);
+		System.out.println("-------------------------------------------------------------------------------\n");
+		
+		//searching for packet - (both these packets have sequence numbers that hash to 4)
+		network.searchPacket(379104); 
+		network.searchPacket(204);
+		
+		//deleting a packet
+		network.deletePacket(204);
+		
+		//searching for deleted packet
+		network.searchPacket(204);
+		
+		//searching for nonexistent packet
+		network.searchPacket(37582);
+		
+		//attempting to delete nonexistent packet
+		network.deletePacket(37582);
+	}
+
+}

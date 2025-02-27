@@ -1,0 +1,19 @@
+public class packetRepository {
+    public static void main(String[] args) {
+        HT hashTable = new HT(100);
+
+        Packet packet1 = new Packet(61932, "WWE", 6190);
+        Packet packet2 = new Packet(22981, "AEW", 2004);
+
+        hashTable.insert(packet1);
+        hashTable.insert(packet2);
+
+        Packet foundPacket = hashTable.search(61932);
+        System.out.println("Found Packet: " + foundPacket);
+
+        hashTable.delete(61932);
+
+        Packet deletedPacket = hashTable.search(61932);
+        System.out.println("Deleted Packet: " + deletedPacket);
+    }
+}

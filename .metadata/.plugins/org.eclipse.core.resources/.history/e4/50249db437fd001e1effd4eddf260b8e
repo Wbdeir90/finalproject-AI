@@ -1,0 +1,53 @@
+
+
+public class packetRepository {
+    public static void main(String[] args) {
+        // Creating Packet objects
+        System.out.println("Creating Packet objects:");
+        Packet packet1 = new Packet(123456, "TCP", 8080);
+        Packet packet2 = new Packet(789012, "UDP", 1234);
+        Packet packet3 = new Packet(13579, "TCP", 9090);
+
+        // Creating a hash table object
+        RecordKeepingHT hashTable = new RecordKeepingHT();
+
+        // Storing Packet objects in the hash table
+        System.out.println("\nStoring Packet objects in the hash table:");
+        hashTable.insert(packet1);
+        hashTable.insert(packet2);
+        hashTable.insert(packet3);
+
+        // Displaying stored packets
+        System.out.println("\nDisplaying stored packets:");
+        Packet foundPacket1 = hashTable.search(123456);
+        if (foundPacket1 != null) {
+            System.out.println("Packet found: Sequence Number = " + foundPacket1.getSequenceNumber() +
+                    ", Protocol = " + foundPacket1.getProtocol() +
+                    ", Port = " + foundPacket1.getPort());
+        } else {
+            System.out.println("Packet not found.");
+        }
+
+        Packet foundPacket2 = hashTable.search(789012);
+        if (foundPacket2 != null) {
+            System.out.println("Packet found: Sequence Number = " + foundPacket2.getSequenceNumber() +
+                    ", Protocol = " + foundPacket2.getProtocol() +
+                    ", Port = " + foundPacket2.getPort());
+        } else {
+            System.out.println("Packet not found.");
+        }
+
+        Packet foundPacket3 = hashTable.search(13579);
+        if (foundPacket3 != null) {
+            System.out.println("Packet found: Sequence Number = " + foundPacket3.getSequenceNumber() +
+                    ", Protocol = " + foundPacket3.getProtocol() +
+                    ", Port = " + foundPacket3.getPort());
+        } else {
+            System.out.println("Packet not found.");
+        }
+
+        // Deleting a Packet object
+        System.out.println("\nDeleting Packet object with sequence number 789012:");
+        hashTable.delete(789012);
+    }
+}

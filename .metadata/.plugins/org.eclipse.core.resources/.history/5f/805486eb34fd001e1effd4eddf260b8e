@@ -1,0 +1,98 @@
+
+
+public class HT {
+	private Packet HT [];
+	private int size;
+	
+	
+	public HT(int size) {
+		HT = new Packet[size];
+		this.size = size;
+	}
+	
+	private int hashFunction(long seq) {
+		return (int)(seq % size);
+	}
+	
+	
+	public void addRecord(Packet newPacket) {
+		int indx = hashFunction(newPacket.getSeqNum());
+		Packet curPacket = null;
+		
+		boolean fStore = false;
+		int startIndx = indx;
+		
+		do {
+			if (HT[indx] != null){
+				curPacket = HT[indx];
+				
+				if(!curPacket.isValid()) {
+					HT[indx] = newPacket;
+					fStore = true;
+				} else {
+					indx = (++indx) % size;
+				}
+					
+			} else {
+				HT[indx] = newPacket;
+				fStore = true;
+			}
+			
+			
+		} while (!fStore && indx != startIndx);
+	}
+	
+	public Packet searchRecord(long key) {
+			
+			int indx = hashFunction(key);
+			int startIndx = indx;
+			
+			do {
+				if(HT[indx] != null) {
+					if (HT[indx].getSeqNum() == key) {
+						return HT[indx];
+					}
+				}
+				
+				indx = (++indx) % size;
+				
+			} while(indx != startIndx);
+			
+			System.out.println("This Sequence Number provided is an invalid search object");
+			return null;
+	}
+	
+	public void remRecord(long key) {
+		int indx = hashFunction(key);
+		int startIndx = indx;
+		boolean flagRem = false;
+		
+		do {
+			if(HT[indx] != null) {
+				if (HT[indx].getSeqNum() == key) {
+					HT[indx] = null;
+					flagRem = true;
+					break;
+				}
+			}
+			
+			indx = (++indx) % size;
+			
+		} while(indx != startIndx);
+		if(!flagRem) System.out.println("This Sequence does not exist in the Hash Table");
+		
+		
+	}
+	
+	public void printHash() {
+		System.out.println("[");
+		for(int i = 0; i < size; i++) {
+			if (HT[i] != null ) {
+				System.out.print(i + ": ("+ HT[i].getSeqNum()+ " | " + HT[i].getPort() + " | " + HT[i].getProtocol() + ")\n");
+			} else {
+				System.out.print(i + ": (null | null | null) \n");
+			}
+		}
+		System.out.println("]\n\n\n");
+	}
+}

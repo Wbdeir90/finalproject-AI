@@ -1,0 +1,107 @@
+
+public class HT {
+	
+	//Variable declaration
+	private Packet[] hashTable;
+	
+	//Constructor to create hash table
+	public HT(int theLength) {
+		hashTable = new Packet[theLength];
+	}
+	
+	//Add a packet to the hash table
+	//Can handle collisions and full hash table
+	public void addPacket(long sequence, String protocol, int port) {
+		
+		//Calculate desired index
+		int indexStart = (int)(sequence % hashTable.length);
+		
+		int i = indexStart;
+		
+		//Loop to add packet to handle
+		do {
+			//checks if index can accept a packet
+			if (hashTable[i] == null || hashTable[i].getDeleted()) {
+				
+				//Add packet
+				hashTable[i] = new Packet(sequence, protocol, port);
+				return;
+			}
+			else {
+				//Increment to continue search for available index
+				i = (++i) % hashTable.length; 
+			}
+			//While we haven't looped fully through the table. 
+		} while (i != indexStart);
+		
+		//Happens only if the table is full
+		System.out.println("Table full. Could not add Packet.");
+	}
+	
+	//Deletes packet
+	//Just sets packet's deleted value to false
+	public void deletePacket(int index) {
+		
+		hashTable[index].setDeleted();
+	}
+	
+	//Search table for desired sequence number
+	//Returns index of found sequence
+	//Returns -1 if sequence number was not found
+	public int searchTable(long seqNum) {
+		
+		//Calculate starting point for search
+		int indexStart = (int)(seqNum % hashTable.length);
+		
+		int i = indexStart;
+		
+		do {
+			
+			//if the sequence numbers match and the index wasn't deleted
+			if (hashTable[i].getSequence() == seqNum && !hashTable[i].getDeleted()) {
+				
+				return i;
+			}
+			//else if an empty index is found
+			else if (hashTable[i] == null) return -1;
+			//else increment counter
+			else {
+				i = (++i) % hashTable.length; 
+			}
+			
+			//while we haven't looped back to the start
+		} while (i != indexStart);
+		
+		return -1;
+		
+	}
+	
+	//Prints table
+	//Used for testing
+	public void printTable() {
+		System.out.println("--------Print Table Function--------\n");
+		
+		for (int i = 0; i < hashTable.length; i++) {
+			
+			//Prints all info
+			if (hashTable[i] != null) {
+				System.out.println("Index: " + i);
+				System.out.println("Desired Index: " + (hashTable[i].getSequence() % hashTable.length));
+				System.out.println("Sequence: " + hashTable[i].getSequence());
+				System.out.println("Protocol: " + hashTable[i].getProtocol());
+				System.out.println("Port Number: " + hashTable[i].getPort());
+				System.out.println("Deletion Status: " + hashTable[i].getDeleted() + "\n");
+			}
+		}
+	}
+
+	public void insertNewRecord(packetRepository port2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public packetRepository searchRecord(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

@@ -1,0 +1,65 @@
+public class HT {
+    private Packet[] packets;
+    private int arraySize;
+
+    public HT(int arraySize) {
+        this.arraySize = arraySize;
+        packets = new Packet[arraySize];
+    }
+
+    private int hashFunction(long seqNum) {
+        return (int)(seqNum % arraySize);
+    }
+
+    public void insertPacket(Packet packet) {
+        Packet packetAtHand = null;
+        long seqNum = packet.getSeqNum();
+        int index = this.hashFunction(seqNum);
+        int endPoint = index;
+        boolean foundHome = false;
+
+        do {
+            if (packets[index] == null) {
+                packets[index] = packet;
+                foundHome = true;
+            } else {
+                packetAtHand = packets[index];
+                if (!packetAtHand.isValid()) {
+                    packets[index] = packet;
+                    foundHome = true;
+                } else {
+                    // search for a home on the right;
+                    index = (++index) % arraySize;
+                }
+            }
+        } while (!foundHome && index != endPoint);
+
+        if (!foundHome) {
+            System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+        }
+    }
+
+    public Packet searchPacket(long searchNumSeq) {
+        Packet packetAtHand = null;
+        int index = this.hashFunction(searchNumSeq);
+        int endPoint = index;
+
+        do {
+            packetAtHand = packets[index];
+            if (packetAtHand == null) return packetAtHand;
+            if (searchNumSeq == packetAtHand.getSeqNum()) {
+                return packetAtHand;
+            } else {
+                index = (++index) % arraySize;
+            }
+        } while (index != endPoint);
+
+        System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+        return null;
+    }
+
+	public void insertpacket(Packet packet1) {
+		// TODO Auto-generated method stub
+		
+	}
+}

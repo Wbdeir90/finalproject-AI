@@ -1,0 +1,103 @@
+
+
+public class HT {
+
+	private Packet[] HT;
+	private int arraySize;
+	
+	public HT(int arraySize) {
+		this.arraySize = arraySize;
+		HT = new Packet[arraySize];
+	}
+	
+	private int hashFunction(long key) {
+		return (int)(key % arraySize);
+	}
+	
+	public void insertNewRecord(Packet newRecord) {
+		   Packet recordAtHand = null;	
+			
+		   long key = newRecord.getKey(); 
+			
+		   int index = this.hashFunction(key);
+		   
+		   int endPoint = index;
+		   
+		   boolean foundHome = false;
+		   
+		   do {
+			   if (HT[index] == null) {
+				   HT[index] = newRecord;
+				   foundHome = true;
+			   } else {
+				   recordAtHand = HT[index];
+				   if (!foundHome) {
+					   HT[index] = newRecord;
+					   foundHome = true;
+				   } else {
+					   // search for a home on the right;
+					   index = (++index) % arraySize;
+				   }
+			   }
+		   } while ((foundHome == false) && (index != endPoint));
+		   
+		   if (foundHome == false) {
+			   System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+		   }
+		}	
+		
+		
+		public Packet searchRecord(long searchKey) {
+			 Packet recordAtHand = null;
+			 
+			 int index = this.hashFunction(searchKey);
+			 
+			 int endPoint = index;
+			 
+			 do {
+				 recordAtHand = HT[index];
+				 
+				 if (recordAtHand == null) return recordAtHand;
+			 
+			     if (searchKey == recordAtHand.getKey()) {
+				     return recordAtHand;
+			     } else {
+			    	 index = (++index) % arraySize;
+			     }
+			 } while (index != endPoint); 
+			 
+		     System.out.println("The hashtable is full, and therefore the new record was not inserted in the hash table");
+			 
+		     return null;
+		}
+		
+		public void deletePacket(long seqNum) {
+		    Packet recordAtHand = null;
+		    
+		    int index = this.hashFunction(seqNum);
+		    
+		    int endPoint = index;
+		    
+		    boolean foundPacket = false;
+		    
+		    do {
+		        if (HT[index] != null && HT[index].getKey() == seqNum) {
+		            HT[index] = null;
+		            foundPacket = true;
+		        } else {
+		            recordAtHand = HT[index];
+		            if (!foundPacket) {
+		                HT[index] = null;
+		                foundPacket = true;
+		            } else {
+		                index = (++index) % arraySize;
+		            }
+		        }
+		    } while ((foundPacket == false) && (index != endPoint));
+		    
+		    if (foundPacket == false) {
+		        System.out.println("Packet Not Found.");
+		    }
+		}
+	
+}

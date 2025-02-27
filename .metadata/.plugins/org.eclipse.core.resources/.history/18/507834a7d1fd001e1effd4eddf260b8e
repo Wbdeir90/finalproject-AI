@@ -1,0 +1,96 @@
+
+
+public class HT {
+	private Packet HashTable[];
+	int arraySize;
+	
+	public HT(int arraySize) {
+		this.arraySize = arraySize;
+		HashTable = new Packet[arraySize];
+	}
+	
+	private int hashFunction(int sequenceNum) {
+		return sequenceNum % arraySize;
+	}
+	
+	public void insertPacket(Packet newPacket) {
+		Packet currentPacket = null;
+		
+		int key = newPacket.getSequenceNum();
+		int index = this.hashFunction(key);
+		int endPoint = index;
+		
+		System.out.println("Insterting Packet at index: " + index);
+		
+		boolean foundHome = false;
+		
+		do {
+			if (HashTable[index] == null) {
+				HashTable[index] = newPacket;
+				foundHome = true;
+			} else {
+				currentPacket = HashTable[index];
+				if (!currentPacket.isValid()) {
+					HashTable[index] = newPacket;
+					foundHome = true;
+				} else {
+					index = (++index) % arraySize;
+				}
+			}
+		} while ((foundHome == false) && (index != endPoint));
+		
+		if (foundHome == false) {
+			System.out.println("The hashtable is full");
+		}
+		
+	}
+	
+	public Packet search(int key) {
+		Packet recordAtHand = null;
+		
+		int index = this.hashFunction(key);
+		int endPoint = index;
+		
+		do {
+			recordAtHand = HashTable[index];
+			if (recordAtHand == null) {
+				return recordAtHand;
+			}
+			if(key == recordAtHand.getSequenceNum()) {
+				return recordAtHand;
+			} else {
+				index = (++index)% arraySize;
+			}
+				
+		} while (index != endPoint);
+			
+		System.out.println("The hashtable is full");
+		return null;
+		
+	}
+	
+	public void removePacket(int key) {
+		System.out.println("Removing Packet at " + key);
+		
+		int index = this.hashFunction(key);
+		int endPoint = index;
+		
+		do {
+			Packet currentPacket = HashTable[index];
+			
+			if(currentPacket == null) {
+				System.out.println("Packet not found");
+				return;
+			}
+			if (currentPacket.getSequenceNum() == key) {
+				HashTable[index] = null;
+				System.out.println("Packet removed from " + index);
+				
+				return;
+			}
+			index = (index++) % arraySize;
+		} while (index != endPoint);
+		
+		System.out.println("Packet not found");
+	}
+}

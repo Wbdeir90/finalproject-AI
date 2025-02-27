@@ -1,0 +1,23 @@
+
+public class packetRepository {
+
+	public static void main(String[] args) {
+		HT hashTable = new HT(10);
+		hashTable.addPacket(1389752482, "TCP", 6);
+		hashTable.addPacket(1319752482, "UDP", 3);
+		hashTable.addPacket(1389755482, "TCP", 1);
+		hashTable.addPacket(1689752482, "TCP", 8);
+		hashTable.addPacket(1989752482, "UDP", 8);
+		hashTable.addPacket(1389732482, "UDP", 6);
+		hashTable.addPacket(1486282482, "UDP", 4);
+		hashTable.addPacket(1382352482, "TCP", 1);
+		hashTable.addPacket(1389788482, "TCP", 2);
+		hashTable.addPacket(1771352482, "UDP", 9);
+		hashTable.printTable();
+		hashTable.deletePacket(1486282482);
+		hashTable.printTable();
+		hashTable.addPacket(1834259426, "UDP", 5);
+		hashTable.printTable();
+	}
+
+}

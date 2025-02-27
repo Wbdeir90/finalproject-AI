@@ -1,0 +1,145 @@
+
+public class HT {
+
+	//attributes
+	
+	private Packet[] HT;
+	
+	private int arraySize;
+
+	//hash table constructor
+	
+	public HT(int arraySize) {
+		
+		this.arraySize = arraySize;
+		
+		HT = new Packet[arraySize];
+	}
+	
+	//hash function
+	
+	public int hashFunction(long sequenceNumber) {
+		
+		return (int) (sequenceNumber % arraySize);
+		
+	}
+	
+	//inserting packet into table
+	
+	public void insertNewPacket(Packet newPacket) {
+		
+		Packet currentPacket = null;
+		
+		long sequenceNumber = newPacket.getSequenceNumber();
+		
+		int index = this.hashFunction(sequenceNumber);
+		
+		int endPoint = index;
+		
+		System.out.println("Inserting new packet with sequence number: " + sequenceNumber + " and hash value: " + index + "\n");
+		
+		boolean foundHome = false;
+		
+		do {
+			
+			if(HT[index] == null) {
+				HT[index] = newPacket;
+				foundHome = true;
+			} else {
+				currentPacket = HT[index];
+				if(!currentPacket.isValid()) {
+					HT[index] = newPacket;
+					foundHome = true;
+				} else {
+					index = (++index) % arraySize;
+				}
+			}			
+		} while ((foundHome == false) && (index != endPoint));
+		
+		if(foundHome == false) 
+			System.out.println("Hash table is full, therefore packet was unable to be inserted.");
+	}
+	
+	//search hash table for packet
+	
+	public Packet searchPacket(long searchNumber) {
+		
+		Packet currentPacket = null;
+		
+		int index = this.hashFunction(searchNumber);
+		
+		int endPoint = index;
+		
+		System.out.println("Searching for packet with sequence number " + searchNumber + "...\n");
+		
+		do {
+			
+			currentPacket = HT[index];
+			
+			if(currentPacket == null) {
+				System.out.println("The hash table does not contain the desired packet.\n");
+				System.out.println("-------------------------------------------------------------------------------\n");
+				return currentPacket;
+			}
+				
+			if(searchNumber == currentPacket.getSequenceNumber()) {
+				System.out.println("The desired packet was found at index: " + index + "\n");
+				System.out.println("-------------------------------------------------------------------------------\n");
+				return currentPacket;
+			} else index = (++index) % (arraySize);
+							
+		} while(index != endPoint);
+		
+		System.out.println("The hash table does not contain the desired packet.\n");
+		System.out.println("-------------------------------------------------------------------------------\n");
+		
+		return null;
+	}
+	
+	//delete a packet from hash table
+	
+	public void deletePacket(long searchNumber) {
+		
+		System.out.println("Attempting to delete packet with sequence number " + searchNumber + "...\n");
+		
+		//packet to be put in place of deleted packet
+		Packet deletionPacket = new Packet(-1, "N/A", 0);
+		deletionPacket.setValidity(false);
+		
+		//method for deletion
+		Packet currentPacket = null;
+		
+		int index = this.hashFunction(searchNumber);
+		
+		int endPoint = index;
+		
+		boolean flag = true;
+		
+		do {
+			
+			currentPacket = HT[index];
+			
+			if(currentPacket == null) {
+				break;
+			}
+			
+			if(searchNumber == currentPacket.getSequenceNumber()) {
+				System.out.println("Desired packet has been found and deleted at index: " + index + "\n");
+				System.out.println("-------------------------------------------------------------------------------\n");
+				HT[index] = deletionPacket;
+				flag = false;
+				break;
+			} else index = (++index) % (arraySize);
+			
+		} while(index != endPoint);
+		
+		if(flag == true) {
+			System.out.println("The hash table does not contain such a packet to delete.\n");
+			System.out.println("-------------------------------------------------------------------------------\n");
+		}
+	}
+	
+}
+
+
+

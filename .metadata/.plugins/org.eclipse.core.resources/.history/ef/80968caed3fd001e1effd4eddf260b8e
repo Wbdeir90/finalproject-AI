@@ -1,0 +1,45 @@
+
+
+public class HT {
+    private int arraySize = 60000;
+    private Packet[] packetMaps = new Packet[arraySize];
+
+    public int hashFunction(int sequenceNumber){
+
+        return (int) (sequenceNumber % arraySize);
+    }
+
+    public void insertPacket(Packet packet){
+        int index = hashFunction(packet.getSequenceNumber());
+        if(packetMaps[index] == null){
+            packetMaps[index] = packet;
+
+        }else{
+            System.out.println("Collision");
+        }
+    }
+
+    public void deletePacket(int sequenceNumber){
+        int index = hashFunction(sequenceNumber);
+        if(packetMaps[index] != null && packetMaps[index].getSequenceNumber() == sequenceNumber){
+            System.out.println("---Target Removed---\nProtocol: "+packetMaps[index].getProtocol() +"\nPort: " + packetMaps[index].getPortNumber());
+            packetMaps[index] = null;
+        }else{
+            System.out.println("Target Doesn't exist, can't be removed");
+        }
+    }
+
+    public Packet SearchPacket(int sequenceNumber){
+        int index = hashFunction(sequenceNumber);
+        if(packetMaps[index] != null && packetMaps[index].getSequenceNumber() == sequenceNumber){
+
+            System.out.println("---Target Found---\n\tProtocol: "+packetMaps[index].getProtocol() +"\n\tPort: " + packetMaps[index].getPortNumber());
+            return packetMaps[index];
+        }else{
+            System.out.println("Search Target Not Found");
+            return null;
+        }
+    }
+
+
+}

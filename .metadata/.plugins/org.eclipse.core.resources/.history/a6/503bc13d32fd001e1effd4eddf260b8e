@@ -1,0 +1,75 @@
+
+
+public class HT {
+
+	private Packet[] ht;
+	private int size;
+	private int indx;
+	
+	
+	public HT(int size) {
+		this.size = size;
+		ht = new Packet[size];
+		indx = 0;
+	}
+	
+	public void addPacket(long sequenceNum, String protocalField, int portField) {
+		Packet newPacket = new Packet(sequenceNum, protocalField, portField);
+		int placementIndex = (int) (sequenceNum % this.size);
+		indx = placementIndex;
+		if(ht[placementIndex] == null) {
+			ht[placementIndex] = newPacket;
+		}else {
+			while(ht[placementIndex] != null) {
+				placementIndex++;
+				if(placementIndex == size) {
+					placementIndex = 0;
+				}
+				if(placementIndex == indx) {
+					break;
+				}
+			}
+			if(ht[placementIndex] == null) {
+				ht[placementIndex] = newPacket;
+			}else {
+				System.out.println("The table is full.");
+			}
+		}
+	}
+	
+	public int searchTable(int searchNum) {
+		indx = 0;
+		while(indx < size) {
+			if(ht[indx] == null) {
+				indx++;
+			}else {
+				long indxNum = ht[indx].getSequenceNum();
+				if(indxNum == searchNum) {
+					return indx;
+				}else {
+					indx++;
+				}
+			}
+		}
+		throw new IllegalArgumentException("The search number that you entered does not exist.");
+	}
+	
+	public void deletePacket(int searchNum) {
+		int indexNum = this.searchTable(searchNum);
+		ht[indexNum] = null;
+		System.out.println("The packet at index " + indexNum + " has been deleted.\n");
+	}
+	
+	public void printTable() {
+		indx = 0;
+		System.out.println("Printing the contents of the hash table:");
+		while(indx < size) {
+			if(ht[indx] != null) {
+				System.out.println("Sequence Number: " + ht[indx].getSequenceNum() + " Protocal Field: " + ht[indx].getProtocalField() + " Port Field: " + ht[indx].getPortField());
+			}
+			indx++;
+		}
+		System.out.println("");
+	}
+	
+}

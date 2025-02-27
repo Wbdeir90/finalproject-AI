@@ -1,0 +1,27 @@
+
+
+public class Packet {
+
+	private long sequenceNum;
+	private String protocalField;
+	private int portField;
+	
+	public Packet(long sNum, String protField, int portF) {
+		sequenceNum = sNum;
+		protocalField = protField;
+		portField = portF;
+	}
+	
+	public long getSequenceNum() {
+		return this.sequenceNum;
+	}
+	
+	public String getProtocalField() {
+		return this.protocalField;
+	}
+	
+	public int getPortField() {
+		return this.portField;
+	}
+	
+}

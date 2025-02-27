@@ -1,0 +1,33 @@
+
+public class Packet {
+	
+	private long sequence;
+
+	private String protocol;
+	
+	private int portfield;
+	
+	private boolean validRecord;
+	
+	
+	public Packet(long sequence, String protocol, int portfield) {
+		this.sequence = sequence;
+		this.protocol = protocol;
+		this.portfield = portfield;
+		
+		validRecord = true;
+		
+	}
+	
+	public long getSequence() {
+		return this.sequence;
+	}
+	
+	public boolean isValid() {
+		return validRecord;
+	}
+	
+	public String getProtocol() {
+		return this.protocol;
+	}
+}

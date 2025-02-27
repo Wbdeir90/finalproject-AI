@@ -1,0 +1,47 @@
+public class PacketRepository {
+    public static void main(String[] args) {
+        HT hashTable = new HT(10); // Initialize hash table with size 10
+
+        hashTable.insertPacket(new Packet(20, "UDP", 2392));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(320491, "TCP", 8080));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(23939181, "TCP", 5063));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(239110, "TCP", 420));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(2304, "UDP", 3467));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(42383234, "UDP", 2024));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(3456, "TCP", 23821));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(2391107, "UDP", 69));
+        hashTable.printHashTable();
+
+        hashTable.insertPacket(new Packet(12345678, "UDP", 465));
+        hashTable.printHashTable();
+
+        hashTable.printHashTable(); // Print final state
+
+        // Search for a packet
+        Packet result = hashTable.searchPacket(3456);
+        if (result != null) {
+            System.out.println("The record you were looking for has the following traits: " +
+                    result.getSeqNum() + " " + result.getPort() + " " + result.getProtocol());
+        } else {
+            System.out.println("This Sequence does not exist in the Hash Table");
+        }
+
+        // Delete a packet
+        hashTable.deletePacket(20);
+        hashTable.printHashTable(); // Print after deletion
+    }
+}
