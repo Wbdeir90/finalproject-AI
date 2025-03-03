@@ -1,6 +1,6 @@
 The goal of this project is to implement an email spam filter that determines whether an email is spam ("spam") or not ("ham"). This project leverages the Naive Bayes algorithm, a widely used technique for text classification, to develop an ML model that can accurately identify spam emails and automate the filtering process.
 
-🚀 Project Workflow
+ Project Workflow
 Data Collection & Preprocessing
 
 We will use a dataset of labeled spam and non-spam emails.
