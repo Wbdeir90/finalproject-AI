@@ -1,4 +1,5 @@
 annotated-types==0.7.0
+chardet
 apache-beam==2.62.0
 attrs==25.1.0
 cachetools==4.2.4
@@ -33,3 +34,4 @@ scipy==1.11.4
 six==1.17.0
 tqdm==4.67.1
 urllib3==2.3.0
+tensorflow==2.4.0
