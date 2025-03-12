@@ -5,16 +5,20 @@ import pandas as pd
 import nltk
 import apache_beam as beam
 from google.cloud import storage, bigquery
+from google.cloud import aiplatform
 from apache_beam.options.pipeline_options import PipelineOptions
 from datetime import datetime
 import chardet
 import tempfile
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from google.cloud import pubsub_v1
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from google.cloud import storage
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +35,25 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\wafaa\OneDrive\Desktop
 # Debug: Print the value of GOOGLE_APPLICATION_CREDENTIALS
 logging.info(f"GOOGLE_APPLICATION_CREDENTIALS: {os.getenv('GOOGLE_APPLICATION_CREDENTIALS')}")
 
-# Function to detect file encoding
+# Set Google Cloud service account key file path
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\wafaa\OneDrive\Desktop\FinalProject\gcp-creds\finalproject-1234567-e5617b2836cb.json"
+
+# Pub/Sub Configuration
+PROJECT_ID = "finalproject-1234567"
+
+def publish_message(topic_id, message):
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
+    
+    future = publisher.publish(topic_path, message.encode("utf-8"))
+    print(f"Published message: {message}")
+    
+    return future.result()
+
+# Call the function with the correct arguments
+publish_message("pubsubfinal", "Pub/Sub is working correctly")
+
+
 def detect_encoding(file_path):
     """
     Detect the encoding of a file.
@@ -85,19 +107,6 @@ def load_data_from_gcs(bucket_name, file_name):
             logging.info(f"Removing temporary file: {temp_file_path}")
             os.remove(temp_file_path)
 
-# Function to parse a CSV line
-def parse_csv_line(line):
-    import csv  # Add this inside the function
-    try:
-        reader = csv.reader([line])
-        values = next(reader)
-        if len(values) >= 2:
-            logging.info(f"Parsed Line: {values}")
-            return {'label': values[0].strip(), 'email': values[1].strip()}
-    except Exception as e:
-        logging.error(f"Error parsing line: {e}")
-    return None
-
 # Apache Beam DoFn for preprocessing data
 class PreprocessData(beam.DoFn):
     def process(self, element):
@@ -122,50 +131,56 @@ class DecodeText(beam.DoFn):
         except Exception as e:
             logging.error(f"Error decoding element: {e}")
 
+# Function to parse a CSV line
+def parse_csv_line(line):
+    import csv  # Add this inside the function
+    try:
+        reader = csv.reader([line])
+        values = next(reader)
+        if len(values) >= 2:
+            logging.info(f"Parsed Line: {values}")
+            return {'label': values[0].strip(), 'email': values[1].strip()}
+    except Exception as e:
+        logging.error(f"Error parsing line: {e}")
+    return None
+
+# Apache Beam DoFn for preprocessing data
+class PreprocessData(beam.DoFn):
+    def process(self, element):
+        if not element or 'email' not in element or 'label' not in element:
+            return
+        email = element['email'].lower()
+        email = re.sub(r'[^\w\s]', '', email)
+        yield {'email': email, 'label': element['label']}
+
 # Function to run the Apache Beam Dataflow pipeline
 def run_dataflow_pipeline(input_file, output_file):
+    # Generate a unique job name based on the current UTC timestamp
     job_name = f"dataflow-job-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
-
+    
     options = PipelineOptions(
         runner="DataflowRunner",
         project="finalproject-1234567",
         region="us-central1",
         job_name=job_name,
-        temp_location="gs://groupfinal/temp",
-        staging_location="gs://groupfinal/staging",
-        service_account_email="dataflow-service-account@finalproject-1234567.iam.gserviceaccount.com"  # Use your custom service account
+        temp_location=f"gs://groupfinal/temp",
+        staging_location=f"gs://groupfinal/staging"
     )
-
-    # Ensure the input file path is in the correct format
-    if not input_file.startswith("gs://"):
-        input_file = f"gs://{input_file}"  # Add 'gs://' if missing
-
-    # Extract bucket name and file name from the GCS path
-    input_file = input_file[5:]  # Remove 'gs://'
-    bucket_name, file_name = input_file.split("/", 1)
-
-    # Download the file from GCS to a temporary local file
-    temp_file_path = os.path.join(tempfile.gettempdir(), "temp_input_file.csv")
-    download_from_gcs(bucket_name, file_name, temp_file_path)
-
-    # Detect the encoding of the downloaded file
-    encoding = detect_encoding(temp_file_path)
-    logging.info(f"Detected encoding: {encoding}")
 
     with beam.Pipeline(options=options) as p:
         (
             p
-            | 'Read from GCS' >> beam.io.ReadFromText(
-                f"gs://{bucket_name}/{file_name}",  # Use the full GCS path
-                skip_header_lines=1, 
-                coder=beam.coders.BytesCoder()  # Read raw bytes
-            )
-            | 'Decode Text' >> beam.ParDo(DecodeText(encoding))  # Decode using the detected encoding
+            | 'Read from GCS' >> beam.io.ReadFromText(input_file, skip_header_lines=1, coder=beam.coders.BytesCoder())
+            | 'Decode Bytes' >> beam.Map(lambda x: x.decode('latin-1'))
             | 'Parse CSV' >> beam.Map(parse_csv_line)
             | 'Filter Invalid Rows' >> beam.Filter(lambda x: x is not None)
             | 'Preprocess Data' >> beam.ParDo(PreprocessData())
             | 'Write to GCS' >> beam.io.WriteToText(output_file)
         )
+
+    # Clean up the temporary file after pipeline completion
+    os.remove(temp_file_path)
+    logging.info(f"Removed temporary file: {temp_file_path}")
 
     # Clean up the temporary file
     os.remove(temp_file_path)
@@ -174,25 +189,51 @@ def run_dataflow_pipeline(input_file, output_file):
 # Function to load data into BigQuery
 def load_data_to_bigquery(df, dataset_id, table_id):
     try:
-        logging.info("Creating BigQuery client...")
-        client = bigquery.Client()
-        table_ref = client.dataset(dataset_id).table(table_id)
+        client = bigquery.Client(project="finalproject-1234567")
+        dataset_ref = client.dataset(dataset_id)
+        table_ref = dataset_ref.table(table_id)
+        
+        schema = [
+            bigquery.SchemaField("label", "STRING"),
+            bigquery.SchemaField("email", "STRING"),
+        ]
 
-        logging.info(f"Loading data into BigQuery table {dataset_id}.{table_id}...")
         job = client.load_table_from_dataframe(df, table_ref)
         job.result()
-        logging.info(f"Data loaded into BigQuery table {dataset_id}.{table_id}")
+
+        logging.info(f"Data successfully loaded into BigQuery table {dataset_id}.{table_id}")
+
     except Exception as e:
         logging.error(f"Error loading data into BigQuery: {e}")
 
+        
+
+def upload_to_gcs(local_file, bucket_name, gcs_path):
+    """Uploads a file to Google Cloud Storage.
+
+    Args:
+        local_file (str): Path to the local file.
+        bucket_name (str): Name of the GCS bucket.
+        gcs_path (str): Destination path in GCS.
+    """
+    try:
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(gcs_path)
+        blob.upload_from_filename(local_file)
+        print(f"File {local_file} uploaded to gs://{bucket_name}/{gcs_path}")
+    except Exception as e:
+        print(f"Failed to upload {local_file} to GCS: {e}")
+
+
 # Function to preprocess text
 def preprocess_text(text):
-    nltk.download('stopwords')  # Ensure it's available in Cloud
-    stop_words = set(stopwords.words('english'))
     text = text.lower()
     text = re.sub(r'[^\w\s]', '', text)
+
+    # Tokenize and remove stopwords
     words = word_tokenize(text)
-    words = [w for w in words if w not in stop_words]
+    words = [w for w in words if w not in stopwords.words('english')]
     return ' '.join(words)
 
 # Function to train Naive Bayes classifier

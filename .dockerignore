@@ -1,0 +1,14 @@
+# Ignore system-related and unnecessary files
+DockerDesktopWSL
+.git
+__pycache__
+*.log
+*.csv
+*.json
+*.sqlite
+*.mp4
+*.zip
+*.tar.gz
+venv/
+myenv/
+node_modules/
