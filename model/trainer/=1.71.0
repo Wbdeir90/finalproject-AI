@@ -1,0 +1,38 @@
+Collecting tensorflow-intel==2.18.0
+  Using cached tensorflow_intel-2.18.0-cp310-cp310-win_amd64.whl.metadata (4.9 kB)
+Collecting protobuf<4.24,>=3.19.6
+  Downloading protobuf-4.23.4-cp310-abi3-win_amd64.whl.metadata (540 bytes)
+Collecting keras==2.15.0
+  Using cached keras-2.15.0-py3-none-any.whl.metadata (2.4 kB)
+Collecting tensorboard<2.16,>=2.15
+  Using cached tensorboard-2.15.2-py3-none-any.whl.metadata (1.7 kB)
+Collecting ml-dtypes<0.5.0,>=0.4.0
+  Downloading ml_dtypes-0.4.1-cp310-cp310-win_amd64.whl.metadata (20 kB)
+Collecting grpcio
+  Using cached grpcio-1.71.0-cp310-cp310-win_amd64.whl.metadata (4.0 kB)
+Collecting grpcio-tools
+  Using cached grpcio_tools-1.71.0-cp310-cp310-win_amd64.whl.metadata (5.5 kB)
+Requirement already satisfied: absl-py>=1.0.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (2.1.0)
+Requirement already satisfied: astunparse>=1.6.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (1.6.3)
+Requirement already satisfied: flatbuffers>=24.3.25 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (25.2.10)
+Requirement already satisfied: gast!=0.5.0,!=0.5.1,!=0.5.2,>=0.2.1 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (0.6.0)
+Requirement already satisfied: google-pasta>=0.1.1 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (0.2.0)
+Requirement already satisfied: libclang>=13.0.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (18.1.1)
+Requirement already satisfied: opt-einsum>=2.3.2 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (3.4.0)
+Requirement already satisfied: packaging in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (24.2)
+Requirement already satisfied: requests<3,>=2.21.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (2.32.3)
+Requirement already satisfied: setuptools in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (77.0.1)
+Requirement already satisfied: six>=1.12.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (1.17.0)
+Requirement already satisfied: termcolor>=1.1.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (2.5.0)
+Requirement already satisfied: typing-extensions>=3.6.6 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (4.12.2)
+Requirement already satisfied: wrapt>=1.11.0 in c:\users\wafaa\appdata\local\programs\python\python310\lib\site-packages (from tensorflow-intel==2.18.0) (1.14.1)
+INFO: pip is looking at multiple versions of tensorflow-intel to determine which version is compatible with other requirements. This could take a while.
+
+The conflict is caused by:
+    The user requested tensorboard<2.16 and >=2.15
+    tensorflow-intel 2.18.0 depends on tensorboard<2.19 and >=2.18
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip to attempt to solve the dependency conflict
+
