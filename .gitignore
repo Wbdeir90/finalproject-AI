@@ -3,3 +3,7 @@ venv/
 *.pyd
 *.dll
 *.lib
+venv/
+*.pyd
+*.dll
+*.lib
