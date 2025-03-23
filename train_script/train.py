@@ -1,112 +1,142 @@
-import argparse
-import os
 import logging
-import pandas as pd
-import joblib
-from google.cloud import storage
+from google.cloud import storage, aiplatform
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+import pandas as pd
+import joblib
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Parse command-line arguments
-parser = argparse.ArgumentParser(description="Train a Naive Bayes model for spam classification.")
-parser.add_argument("--epochs", type=int, default=10, help="Number of epochs for training (not used in Naive Bayes).")
-args = parser.parse_args()
-print(f"Training started with epochs: {args.epochs}")
+# Set Google Cloud credentials
+GCP_CREDENTIALS_PATH = "C:\\Users\\wafaa\\gcp-creds\\finalproject-1234567-e5617b2836cb.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GCP_CREDENTIALS_PATH
+
+# Global variables
+PROJECT_ID = "finalproject-1234567"
+BUCKET_NAME = "groupfinal-central"
+FILE_NAME = "spam.csv"
+MODEL_NAME = "spam_classifier"
+REGION = "us-central1"  
+package_gcs_uri = "gs://groupfinal-central/model-0.1.tar.gz"
 
 
-# Load data from Google Cloud Storage (GCS)
-def load_data_from_gcs(bucket_name, file_name):
-    """Load data from a file in Google Cloud Storage."""
+def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    """Download file from GCS."""
     try:
         client = storage.Client()
         bucket = client.bucket(bucket_name)
-        blob = bucket.blob(file_name)
-
-        temp_file_path = "temp_data.csv"
-        blob.download_to_filename(temp_file_path)
-        logging.info(f"Data downloaded from GCS: {file_name}")
-
-        df = pd.read_csv(temp_file_path)
-        os.remove(temp_file_path)  # Clean up temporary file
-        return df
+        blob = bucket.blob(source_blob_name)
+        blob.download_to_filename(destination_file_name)
+        logging.info(f"Successfully downloaded {source_blob_name} to {destination_file_name}.")
+        return True
     except Exception as e:
-        logging.error(f"Failed to load data from GCS: {e}")
-        raise
+        logging.error(f"Error downloading file from GCS: {e}")
+        return False
 
-# Preprocess the dataset
+
+def load_data(file_path):
+    """Load the dataset."""
+    try:
+        data = pd.read_csv(file_path, encoding='utf-8', errors='replace')
+        logging.info(f"Data successfully loaded with shape {data.shape}.")
+        return data
+    except Exception as e:
+        logging.error(f"Failed to load data: {e}")
+        return None
+
+
 def preprocess_data(df):
-    """Preprocess the data for training."""
+    """Preprocess the dataset for training."""
+    df.columns = ['label', 'email']  # Adjust column names if necessary
     if 'label' not in df or 'email' not in df:
-        raise ValueError("Dataset must contain 'label' and 'email' columns.")
-    
-    df['label'] = df['label'].map({'spam': 1, 'ham': 0})  # Convert labels to binary
+        logging.error("Missing required columns ('label' or 'email') in dataset.")
+        return None
+    df = df.dropna(subset=['label', 'email'])
+    df['label'] = df['label'].map({'spam': 1, 'ham': 0})  # Ensure proper mapping
     return df
 
-# Train the Naive Bayes model
-def train_model(df):
-    """Train a Naive Bayes model."""
-    vectorizer = TfidfVectorizer(max_features=5000)
-    X = vectorizer.fit_transform(df['email']).toarray()
+
+def train_naive_bayes(df):
+    """Train a Naive Bayes classifier."""
+    df['email'] = df['email'].str.lower().str.strip()
+    vectorizer = TfidfVectorizer(stop_words='english')
+    X = vectorizer.fit_transform(df['email'])
     y = df['label']
-
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Train model
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     model = MultinomialNB()
     model.fit(X_train, y_train)
-
-    # Evaluate model
+    
     y_pred = model.predict(X_test)
-    logging.info(f"Model Accuracy: {accuracy_score(y_test, y_pred):.4f}")
-    logging.info(f"Model Precision: {precision_score(y_test, y_pred):.4f}")
-    logging.info(f"Model Recall: {recall_score(y_test, y_pred):.4f}")
-    logging.info(f"Model F1-Score: {f1_score(y_test, y_pred):.4f}")
-
+    logging.info(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+    logging.info(f"Precision: {precision_score(y_test, y_pred):.4f}")
+    logging.info(f"Recall: {recall_score(y_test, y_pred):.4f}")
+    logging.info(f"F1 Score: {f1_score(y_test, y_pred):.4f}")
     return model, vectorizer
 
-# Save model and vectorizer to GCS
+
 def save_model_to_gcs(model, vectorizer, bucket_name, model_name):
     """Save trained model and vectorizer to Google Cloud Storage."""
     try:
         client = storage.Client()
         bucket = client.bucket(bucket_name)
 
-        # Save model
+        if not bucket.exists():
+            logging.error(f"Bucket '{bucket_name}' does not exist.")
+            return
+        
+        # Save and upload model
         model_file = "model.pkl"
         joblib.dump(model, model_file)
-        bucket.blob(f"{model_name}/{model_file}").upload_from_filename(model_file)
-        os.remove(model_file)  # Clean up local file
-        logging.info(f"Model saved to GCS: {model_name}/{model_file}")
+        blob = bucket.blob(f"{model_name}/{model_file}")
+        blob.upload_from_filename(model_file)
+        logging.info(f"Model uploaded to gs://{bucket_name}/{model_name}/{model_file}")
+        os.remove(model_file)
 
-        # Save vectorizer
+        # Save and upload vectorizer
         vectorizer_file = "vectorizer.pkl"
         joblib.dump(vectorizer, vectorizer_file)
-        bucket.blob(f"{model_name}/{vectorizer_file}").upload_from_filename(vectorizer_file)
-        os.remove(vectorizer_file)  # Clean up local file
-        logging.info(f"Vectorizer saved to GCS: {model_name}/{vectorizer_file}")
+        blob = bucket.blob(f"{model_name}/{vectorizer_file}")
+        blob.upload_from_filename(vectorizer_file)
+        logging.info(f"Vectorizer uploaded to gs://{bucket_name}/{model_name}/{vectorizer_file}")
+        os.remove(vectorizer_file)
 
     except Exception as e:
         logging.error(f"Failed to save model to GCS: {e}")
-        raise
+
+# Initialize AI Platform with correct staging bucket
+aiplatform.init(
+    project="finalproject-1234567",
+    staging_bucket="gs://groupfinal-central-staging"
+)
+
+# Define and run the AI Platform training job
+job = aiplatform.CustomPythonPackageTrainingJob(
+    display_name="spam-classifier-job",
+    python_package_gcs_uri="gs://groupfinal-central/model-0.1.tar.gz",
+    python_module_name="trainer.train", 
+    container_uri="us-docker.pkg.dev/vertex-ai/training/scikit-learn-cpu.0-23:latest"
+)
+
+job.run(
+    replica_count=1,
+    machine_type="n1-standard-4",
+    args=[]
+)
+
+def main():
+    if download_from_gcs(BUCKET_NAME, FILE_NAME, FILE_NAME):
+        data = load_data(FILE_NAME)
+        if data is not None:
+            df = preprocess_data(data)
+            if df is not None:
+                model, vectorizer = train_naive_bayes(df)
+                if model and vectorizer:
+                    save_model_to_gcs(model, vectorizer, BUCKET_NAME, MODEL_NAME)
+
 
 if __name__ == "__main__":
-    # GCS configuration
-    bucket_name = os.getenv("GCS_BUCKET_NAME", "groupfinal")  # Set bucket name via env variable or use default
-    file_name = "processed_data.txt"
-    model_name = "spam_classifier"
-
-    # Load and preprocess data
-    df = load_data_from_gcs(bucket_name, file_name)
-    df = preprocess_data(df)
-
-    # Train model
-    model, vectorizer = train_model(df)
-
-    # Save model to GCS
-    save_model_to_gcs(model, vectorizer, bucket_name, model_name)
+    main() 

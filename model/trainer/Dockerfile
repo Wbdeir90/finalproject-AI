@@ -1,26 +1,34 @@
-# Use TensorFlow as a base image for machine learning
+# Use official TensorFlow base image
 FROM tensorflow/tensorflow:2.15.0
 
-# Set the working directory in the container
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONIOENCODING=UTF-8 \
+    PATH="/root/.local/bin:${PATH}"
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /trainer
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
-# Copy the requirements file into the container
+# Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy the training scripts
+# Copy application code
 COPY . .
 
-# Ensure GCP credentials are in place
-COPY gcp-creds/finalproject-1234567-e5617b2836cb.json /root/gcp-creds/finalproject-1234567-e5617b2836cb.json
+# Configure GCP credentials
+RUN mkdir -p /root/gcp-creds && \
+    chmod 700 /root/gcp-creds
 
-# Set environment variable for GCP credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/root/gcp-creds/finalproject-1234567-e5617b2836cb.json
-
-# Run the training script
-CMD ["python", "train.py"]
+COPY gcp-creds/finalproject-1234567-e5617b2836cb.json /root/gcp-creds/
+RUN chmod 600 /root/gcp-creds/final
