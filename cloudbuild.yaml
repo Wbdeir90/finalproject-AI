@@ -1,6 +1,9 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
+# ✅ Move `serviceAccount` to the top level
+serviceAccount: 'projects/finalproject-1234567/serviceAccounts/cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com'
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -23,7 +26,6 @@ steps:
       - '--region=us-central1'
       - '--platform=managed'
       - '--allow-unauthenticated'
-    serviceAccount: 'cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com'
 
 images:
   - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
