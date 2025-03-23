@@ -17,7 +17,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GCP_CREDENTIALS_PATH
 
 # Global variables
 PROJECT_ID = "finalproject-1234567"
-BUCKET_NAME = "groupfinal-central"
+bucket_name = "groupfinal-central"
 FILE_NAME = "spam.csv"
 MODEL_NAME = "spam_classifier"
 REGION = "us-central1"  
@@ -76,8 +76,9 @@ def train_naive_bayes(df):
     logging.info(f"Precision: {precision_score(y_test, y_pred):.4f}")
     logging.info(f"Recall: {recall_score(y_test, y_pred):.4f}")
     logging.info(f"F1 Score: {f1_score(y_test, y_pred):.4f}")
+    logging.info(f"Confusion Matrix:\n{confusion_matrix(y_test, y_pred)}")  # <-- Added line
+    
     return model, vectorizer
-
 
 def save_model_to_gcs(model, vectorizer, bucket_name, model_name):
     """Save trained model and vectorizer to Google Cloud Storage."""
@@ -128,14 +129,14 @@ job.run(
 )
 
 def main():
-    if download_from_gcs(BUCKET_NAME, FILE_NAME, FILE_NAME):
+    if download_from_gcs(bucket_name, FILE_NAME, FILE_NAME):
         data = load_data(FILE_NAME)
         if data is not None:
             df = preprocess_data(data)
             if df is not None:
                 model, vectorizer = train_naive_bayes(df)
                 if model and vectorizer:
-                    save_model_to_gcs(model, vectorizer, BUCKET_NAME, MODEL_NAME)
+                    save_model_to_gcs(model, vectorizer, bucket_name, MODEL_NAME)
 
 
 if __name__ == "__main__":

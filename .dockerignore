@@ -12,3 +12,7 @@ __pycache__
 venv/
 myenv/
 node_modules/
+*.DS_Store
+.vscode/
+node_modules/
+gcp-creds/
