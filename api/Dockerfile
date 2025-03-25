@@ -1,40 +1,28 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Stage 1: Build dependencies
+FROM python:3.9 AS build
 
-# Install necessary system packages
-RUN apt-get update && apt-get install -y \
-    iputils-ping \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set the working directory in the container
 WORKDIR /app
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
-# Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project into the container
-COPY . .
+# Stage 2: Final image
+FROM python:3.9-slim
 
-# Ensure GCP credentials are in place
-COPY gcp-creds/finalproject-1234567-e5617b2836cb.json /root/gcp-creds/finalproject-1234567-e5617b2836cb.json
+WORKDIR /app
 
-# Set environment variable for GCP credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/root/gcp-creds/finalproject-1234567-e5617b2836cb.json
-
-# Install Apache Beam for GCP (if needed)
-RUN pip install apache-beam[gcp]
-
-# Expose port 8080
+# Expose the port Cloud Run expects
 EXPOSE 8080
 
-# Set the working directory for running the app
-WORKDIR /app/api
+# Copy dependencies and app files
+COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /app /app
 
-# Run the application
+# Set environment variable for Cloud Run
+ENV PORT=8080
+
+# Start the app
 CMD ["python", "app.py"]

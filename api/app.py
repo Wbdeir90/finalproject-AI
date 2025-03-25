@@ -1,31 +1,30 @@
-import sys
-import os
-import logging  
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from model.trainer.train import predict, explain
 from flask import Flask, request, jsonify
-  
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-logger.info("Logging is now configured!")
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
-def predict_api():
-    data = request.json
-    email = data['email']
-    prediction = predict(email)
-    return jsonify({'prediction': prediction})
+# Basic home route
+@app.route('/')
+def home():
+    return 'Welcome to the Spam Classifier API!'
 
-@app.route('/explain', methods=['POST'])
-def explain_api():
-    data = request.json
-    email = data['email']
-    explanation = explain(email)
-    return jsonify({'explanation': explanation})
+# Sample endpoint for spam classification
+# You can replace this with your actual model endpoint for classification
+@app.route('/classify', methods=['POST'])
+def classify_spam():
+    # Get the message from the request body (assuming it's in JSON format)
+    data = request.get_json()
+    message = data.get('message', '')
 
-if __name__ == "__main__":
+    # Placeholder for spam classification logic (replace with actual model inference)
+    if not message:
+        return jsonify({'error': 'No message provided'}), 400
+
+    # For demonstration purposes, consider any message with 'buy' as spam
+    # You should replace this with your actual model prediction
+    is_spam = 'buy' in message.lower()
+
+    return jsonify({'message': message, 'is_spam': is_spam})
+
+if __name__ == '__main__':
+    # Running the app on all addresses to make it accessible externally
     app.run(host='0.0.0.0', port=8080)

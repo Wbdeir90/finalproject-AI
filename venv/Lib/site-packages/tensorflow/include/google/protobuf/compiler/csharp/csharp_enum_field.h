@@ -31,6 +31,8 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_CSHARP_ENUM_FIELD_H__
 #define GOOGLE_PROTOBUF_COMPILER_CSHARP_ENUM_FIELD_H__
 
+#include <string>
+
 #include <google/protobuf/compiler/code_generator.h>
 #include <google/protobuf/compiler/csharp/csharp_primitive_field.h>
 
@@ -49,11 +51,11 @@ class EnumFieldGenerator : public PrimitiveFieldGenerator {
   EnumFieldGenerator(const EnumFieldGenerator&) = delete;
   EnumFieldGenerator& operator=(const EnumFieldGenerator&) = delete;
 
-  virtual void GenerateCodecCode(io::Printer* printer) override;
-  virtual void GenerateParsingCode(io::Printer* printer) override;
-  virtual void GenerateSerializationCode(io::Printer* printer) override;
-  virtual void GenerateSerializedSizeCode(io::Printer* printer) override;
-  virtual void GenerateExtensionCode(io::Printer* printer) override;
+  virtual void GenerateCodecCode(io::Printer* printer);
+  virtual void GenerateParsingCode(io::Printer* printer);
+  virtual void GenerateSerializationCode(io::Printer* printer);
+  virtual void GenerateSerializedSizeCode(io::Printer* printer);
+  virtual void GenerateExtensionCode(io::Printer* printer);
 };
 
 class EnumOneofFieldGenerator : public PrimitiveOneofFieldGenerator {
@@ -66,10 +68,10 @@ class EnumOneofFieldGenerator : public PrimitiveOneofFieldGenerator {
   EnumOneofFieldGenerator(const EnumOneofFieldGenerator&) = delete;
   EnumOneofFieldGenerator& operator=(const EnumOneofFieldGenerator&) = delete;
 
-  virtual void GenerateMergingCode(io::Printer* printer) override;
-  virtual void GenerateParsingCode(io::Printer* printer) override;
-  virtual void GenerateSerializationCode(io::Printer* printer) override;
-  virtual void GenerateSerializedSizeCode(io::Printer* printer) override;
+  virtual void GenerateMergingCode(io::Printer* printer);
+  virtual void GenerateParsingCode(io::Printer* printer);
+  virtual void GenerateSerializationCode(io::Printer* printer);
+  virtual void GenerateSerializedSizeCode(io::Printer* printer);
 };
 
 }  // namespace csharp

@@ -1,9 +1,12 @@
-gcp-creds/finalproject-1234567-e5617b2836cb.json
+myenv/
 venv/
-*.pyd
-*.dll
-*.lib
-venv/
-*.pyd
-*.dll
-*.lib
+__pycache__/
+*.pyc
+.DS_Store
+
+
+# Ignore Cloud Build & Docker files
+cloudbuild.yaml
+.Dockerfile
+
+finalproject-1234567-e5617b2836cb.json

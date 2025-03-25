@@ -1,0 +1,6 @@
+__pycache__/       # Ignore Python bytecode cache directories
+.git/              # Ignore Git version control files
+venv/              # Ignore virtual environment directories
+*.log              # Ignore log files
+*.csv              # Ignore CSV files (if not needed in the container)
+*.json             # Ignore JSON files (if not needed in the container)
