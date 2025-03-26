@@ -1,31 +1,66 @@
-options:
-  logging: CLOUD_LOGGING_ONLY
-
-# ✅ Move `serviceAccount` to the top level
-serviceAccount: 'projects/finalproject-1234567/serviceAccounts/cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com'
+substitutions:
+  _SHORT_SHA: '${SHORT_SHA}'  # Ensure _SHORT_SHA is substituted properly
 
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
+  # Step 1: Authenticate with Artifact Registry
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Authenticate with Artifact Registry'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+  # Step 2: Build Docker Image
+  - name: 'gcr.io/cloud-builders/docker'  
+    id: 'Build Docker Image'
     args:
       - 'build'
       - '-t'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA}'
       - '.'
-  
+
+  # Step 3: Push Docker Image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Docker Image'
     args:
       - 'push'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
-  
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'spam-classifier-api'
-      - '--image=us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA}'
 
-images:
-  - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
+  # Step 4: Deploy Image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy to Cloud Run'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run deploy spam-classifier-api \
+          --image=us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA} \
+          --platform=managed \
+          --region=us-central1 \
+          --allow-unauthenticated \
+          --service-account=cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com \
+          --project=finalproject-1234567
+
+  # Step 5: Verify Deployment Status
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Verify Deployment'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        STATUS=$(gcloud run services describe spam-classifier-api --region=us-central1 --format='value(status.address.url)')
+        if [ -z "$STATUS" ]; then
+          echo "Deployment failed!" && exit 1
+        else
+          echo "Deployment successful! Service URL: $STATUS"
+        fi
+
+  # Step 6: Notify Deployment Success
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Notify Deployment Success'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Deployment completed successfully for commit ${_SHORT_SHA}!"
