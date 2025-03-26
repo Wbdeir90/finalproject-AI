@@ -10,6 +10,12 @@ COPY . /app
 # Install any needed packages
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install --no-cache-dir -r requirements.txt && \
+    if [ "$(uname)" != "Darwin" ]; then \
+        pip uninstall pywin32; \
+    fi
+
+
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
