@@ -2,29 +2,24 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Basic home route
-@app.route('/')
+# Define a home route
+@app.route("/", methods=["GET"])
 def home():
-    return 'Welcome to the Spam Classifier API!'
+    return jsonify({"message": "Spam Classifier API is running!"})
 
-# Sample endpoint for spam classification
-# You can replace this with your actual model endpoint for classification
-@app.route('/classify', methods=['POST'])
-def classify_spam():
-    # Get the message from the request body (assuming it's in JSON format)
+# Example endpoint for spam classification
+@app.route("/predict", methods=["POST"])
+def predict():
     data = request.get_json()
-    message = data.get('message', '')
+    
+    # Dummy response - Replace this with your actual spam classification logic
+    if not data or "message" not in data:
+        return jsonify({"error": "Missing 'message' field"}), 400
 
-    # Placeholder for spam classification logic (replace with actual model inference)
-    if not message:
-        return jsonify({'error': 'No message provided'}), 400
+    message = data["message"]
+    prediction = "spam" if "buy now" in message.lower() else "ham"
 
-    # For demonstration purposes, consider any message with 'buy' as spam
-    # You should replace this with your actual model prediction
-    is_spam = 'buy' in message.lower()
+    return jsonify({"message": message, "prediction": prediction})
 
-    return jsonify({'message': message, 'is_spam': is_spam})
-
-if __name__ == '__main__':
-    # Running the app on all addresses to make it accessible externally
-    app.run(host='0.0.0.0', port=8080)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)

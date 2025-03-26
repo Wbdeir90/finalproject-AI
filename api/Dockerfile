@@ -1,28 +1,20 @@
-# Stage 1: Build dependencies
-FROM python:3.9 AS build
-
-WORKDIR /app
-
-COPY requirements.txt .
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Stage 2: Final image
+# Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Expose the port Cloud Run expects
+# Copy the current directory contents into the container
+COPY . /app
+
+# Install any needed packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Copy dependencies and app files
-COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=build /usr/local/bin /usr/local/bin
-COPY --from=build /app /app
+# Define environment variable
+ENV NAME World
 
-# Set environment variable for Cloud Run
-ENV PORT=8080
-
-# Start the app
+# Run app.py when the container launches
 CMD ["python", "app.py"]
