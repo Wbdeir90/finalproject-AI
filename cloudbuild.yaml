@@ -1,48 +1,62 @@
-# Define the service account
-serviceAccount: 'projects/finalproject-1234567/serviceAccounts/cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com'
+# Define the service account  
+serviceAccount: 'projects/finalproject-1234567/serviceAccounts/cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com'  
 
-# Enable Cloud Logging
-options:
-  logging: CLOUD_LOGGING_ONLY
+# Enable Cloud Logging  
+options:  
+  logging: CLOUD_LOGGING_ONLY  
 
-steps:
-  # Step 1: Build Docker image with SHA tag
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
-      - '.'
+substitutions:  
+  _SHORT_SHA: "${SHORT_SHA}"  
 
-  # Step 2: Build Docker image with 'latest' tag
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest'
-      - '.'
+steps:  
+  # Step 1: Authenticate Docker to use Artifact Registry  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args:  
+      - 'login'  
+      - '-u'  
+      - 'oauth2accesstoken'  
+      - '-p'  
+      - '$(gcloud auth print-access-token)'  
+      - 'us-central1-docker.pkg.dev'  
 
-  # Step 3: Push both images to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
+  # Step 2: Build Docker image with SHA tag  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args:  
+      - 'build'  
+      - '-t'  
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA:-latest}'  
+      - '.'  
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest'
+  # Step 3: Build Docker image with 'latest' tag  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args:  
+      - 'build'  
+      - '-t'  
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest'  
+      - '.'  
 
-  # Step 4: Deploy to Cloud Run
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'spam-classifier-api'
-      - '--image=us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
+  # Step 4: Push both images to Artifact Registry  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args:  
+      - 'push'  
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA}'  
 
-images:
-  - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$SHORT_SHA'
+  - name: 'gcr.io/cloud-builders/docker'  
+    args:  
+      - 'push'  
+      - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest'  
+
+  # Step 5: Deploy to Cloud Run  
+  - name: 'gcr.io/cloud-builders/gcloud'  
+    args:  
+      - 'run'  
+      - 'deploy'  
+      - 'spam-classifier-api'  
+      - '--image=us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA}'  
+      - '--region=us-central1'  
+      - '--platform=managed'  
+      - '--allow-unauthenticated'  
+
+# Store built images  
+images:  
+  - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:${_SHORT_SHA}'  
