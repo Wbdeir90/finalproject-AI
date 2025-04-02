@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: spam-classifier-api
+  namespace: finalproject-1234567
+  annotations:
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"  # Keep at least 1 instance running
+        autoscaling.knative.dev/maxScale: "5"  # Scale up to 5 instances
+    spec:
+      containers:
+        - image: us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PROJECT_ID
+              value: "finalproject-1234567"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/secrets/gcp-creds.json"
+          volumeMounts:
+            - name: gcp-creds
+              mountPath: "/secrets"
+              readOnly: true
+      volumes:
+        - name: gcp-creds
+          secret:
+            secretName: cloud-run-service-account
+      serviceAccountName: cloud-build-sa@finalproject-1234567.iam.gserviceaccount.com
+      timeoutSeconds: 300

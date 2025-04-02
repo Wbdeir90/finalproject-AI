@@ -1,16 +1,51 @@
+import os
 from google.cloud import aiplatform
+import logging
 
-# Initialize AI Platform job
-job = aiplatform.CustomPythonPackageTrainingJob(
-    display_name="spam-classifier-training",
-    python_package_gcs_uri="gs://groupfinal-central/spam_classifier/",  # Update with your actual GCS path
-    python_module_name="trainer.train",  # This should match your training script
-    container_uri="us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:latest"
+# Set your project details
+PROJECT_ID = "finalproject-1234567"
+REGION = "us-central1"
+GCS_BUCKET = "gs://groupfinal-central-staging/output"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Set Google Cloud credentials
+GCP_CREDENTIALS_PATH = "C:\\Users\\wafaa\\gcp-creds\\finalproject-1234567-e5617b2836cb.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GCP_CREDENTIALS_PATH
+
+# Fetch the custom training image
+TRAINING_IMAGE = "us-docker.pkg.dev/vertex-ai/training/scikit-learn-cpu.0-23:latest"
+
+if not TRAINING_IMAGE:
+    raise ValueError("The environment variable 'TRAINING_IMAGE' is not set. Please set it to the correct Docker image URI.")
+
+# Initialize Vertex AI
+aiplatform.init(
+    project=PROJECT_ID,
+    location=REGION,
+    staging_bucket=GCS_BUCKET
 )
 
-# Run the training job
-job.run(
-    replica_count=1,  # Adjust if needed
-    machine_type="n1-standard-4",  # Choose appropriate compute resources
-    args=[]  # Pass additional training arguments if necessary
-)
+def create_custom_training_job():
+    """Creates and runs a custom training job on Vertex AI."""
+    
+    job = aiplatform.CustomTrainingJob(
+        display_name="spam-classifier-job",
+        script_path="train.py",
+        container_uri=TRAINING_IMAGE,
+        requirements=["scikit-learn", "pandas", "tensorflow"],
+    )
+
+    model = job.run(
+        replica_count=1,
+        machine_type="n1-standard-4",
+        args=["--batch_size", "64", "--epochs", "10"],
+        base_output_dir=f"{GCS_BUCKET}/output",
+    )
+
+    print("Training job submitted successfully!")
+    return model
+
+if __name__ == "__main__":
+    create_custom_training_job()

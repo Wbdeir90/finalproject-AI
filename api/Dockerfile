@@ -1,26 +1,36 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use official Python image from Docker Hub
+FROM python:3.9-slim AS builder
 
-# Set the working directory in the container
+# Set the working directory in the builder stage
 WORKDIR /app
 
-# Copy the current directory contents into the container
-COPY . /app
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libclang-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*  # Clean up to reduce image size
 
-# Install any needed packages
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy only requirements.txt first to leverage layer caching
+COPY requirements.txt . 
 
-RUN pip install --no-cache-dir -r requirements.txt && \
-    if [ "$(uname)" != "Darwin" ]; then \
-        pip uninstall pywin32; \
-    fi
+# Install dependencies in a temporary directory
+RUN pip install --no-cache-dir -r requirements.txt -t /app/deps
 
+# Now use a clean Python base image for the final container
+FROM python:3.9-slim 
 
-# Make port 8080 available to the world outside this container
+# Set working directory
+WORKDIR /app
+
+# Copy installed dependencies from the builder stage
+COPY --from=builder /app/deps /usr/local/lib/python3.9/site-packages
+
+# Copy the application code
+COPY . /app/
+
+# Expose port 8080 for Cloud Run
 EXPOSE 8080
 
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+# Run the app with gunicorn (recommended for production)
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
