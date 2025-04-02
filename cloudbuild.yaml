@@ -49,14 +49,13 @@ steps:
         echo "Docker Image Built & Pushed: us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$_SHORT_SHA"
         echo "Cloud Run Service Deployed: https://spam-classifier-api-888676141442.us-central1.run.app"
 
-# Specify the images to be built and pushed
 images:
   - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$_SHORT_SHA'
 
-# Set logging options to store logs in Cloud Logging only
 options:
   logging: CLOUD_LOGGING_ONLY
+  build:
+    logs_bucket: 'gs://final-central-staging-output/'  # Specify your logs bucket here
 
-# Substitutions for dynamic values
 substitutions:
   _SHORT_SHA: ${SHORT_SHA:-latest}
