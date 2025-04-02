@@ -1,28 +1,36 @@
-# Stage 1: Build dependencies
-FROM python:3.9 AS build
+# Use official Python image from Docker Hub
+FROM python:3.9-slim AS builder
 
+# Set the working directory in the builder stage
 WORKDIR /app
 
-COPY requirements.txt .
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libclang-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*  # Clean up to reduce image size
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy only requirements.txt first to leverage layer caching
+COPY requirements.txt . 
 
-# Stage 2: Final image
-FROM python:3.9-slim
+# Install dependencies in a temporary directory
+RUN pip install --no-cache-dir -r requirements.txt -t /app/deps
 
+# Now use a clean Python base image for the final container
+FROM python:3.9-slim 
+
+# Set working directory
 WORKDIR /app
 
-# Expose the port Cloud Run expects
+# Copy installed dependencies from the builder stage
+COPY --from=builder /app/deps /usr/local/lib/python3.9/site-packages
+
+# Copy the application code
+COPY . /app/
+
+# Expose port 8080 for Cloud Run
 EXPOSE 8080
 
-# Copy dependencies and app files
-COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=build /usr/local/bin /usr/local/bin
-COPY --from=build /app /app
-
-# Set environment variable for Cloud Run
-ENV PORT=8080
-
-# Start the app
-CMD ["python", "app.py"]
+# Run the app with gunicorn (recommended for production)
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]

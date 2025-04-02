@@ -1,6 +1,43 @@
-__pycache__/       # Ignore Python bytecode cache directories
-.git/              # Ignore Git version control files
-venv/              # Ignore virtual environment directories
-*.log              # Ignore log files
-*.csv              # Ignore CSV files (if not needed in the container)
+__pycache__
+.git
+.venv
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.log
 *.json             # Ignore JSON files (if not needed in the container)
+dataset/# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+.venv/
+venv/
+
+# Ignore log and database files
+*.log
+*.db
+
+# Ignore environment and configuration files
+.env
+Pipfile
+Pipfile.lock
+
+# Ignore dataset folder if it's large and not needed in the build
+dataset/
+
+# Ignore all JSON files except service account credentials
+*.json
+!finalproject-1234567-e5617b2836cb.json
+
+# Ignore Git and build-related files
+.git/
+.gitignore
+
+Pipfile
+Pipfile.lock
+.env
+
