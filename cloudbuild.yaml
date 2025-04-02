@@ -49,8 +49,7 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
-  build:
-    default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET  # Using this for default log bucket behavior
+  logs_bucket: "gs://groupfinal-central-staging/output"  # Specify your existing bucket here
 
 substitutions:
   _SHORT_SHA: ${SHORT_SHA:-latest}
