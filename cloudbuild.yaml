@@ -1,5 +1,4 @@
 steps:
-  # Step 1: Authenticate with Artifact Registry
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Authenticate with Artifact Registry'
     entrypoint: 'bash'
@@ -8,23 +7,20 @@ steps:
       - |
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-  # Step 2: Build Docker Image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build Docker Image'
     args:
       - 'build'
       - '-t'
       - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$_SHORT_SHA'
-      - 'api/'  # Change if your Dockerfile is elsewhere
+      - 'api/'
 
-  # Step 3: Push Docker Image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push Docker Image'
     args:
       - 'push'
       - 'us-central1-docker.pkg.dev/finalproject-1234567/my-repo/spam-classifier-api:$_SHORT_SHA'
 
-  # Step 4: Deploy Docker Image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Deploy to Cloud Run'
     args:
@@ -39,7 +35,6 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
 
-  # Step 5: Notify Build Success
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Notify Build Success'
     entrypoint: 'bash'
@@ -55,7 +50,7 @@ images:
 options:
   logging: CLOUD_LOGGING_ONLY
   build:
-    logs_bucket: 'gs://final-central-staging-output/'  # Specify your logs bucket here
+    default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET  # Using this for default log bucket behavior
 
 substitutions:
   _SHORT_SHA: ${SHORT_SHA:-latest}
